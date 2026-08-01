@@ -1,4 +1,4 @@
-id,Name,Release Date (brawler number?),Role,Rarity,Attack Range,Gender ,Attacks per Ammo,Super Type
+id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Type
 1,Shelly,Original 15,Damage Dealer,Starting Brawler,Long,Female,5,"CC, Damage"
 2,Colt,Original 15,Damage Dealer,Rare,Long,Male,6,Damage
 3,Bull,Original 15,Tank,Rare,Normal,Male,5,"CC, Damage, Debuff, Movement"
