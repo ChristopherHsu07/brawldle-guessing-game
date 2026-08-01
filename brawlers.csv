@@ -62,7 +62,7 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 61,Buster,61,Tank,Mythic,Normal,Male,1,Buff
 62,Chester,62,Damage Dealer,Legendary,Long,Male,3,"Buff, CC, Damage, DOT, Debuff, Heal, Movement"
 63,Gray,63,Support,Mythic,Long,Male,1,Movement
-64,Mandy,64,Marksman,Mythic,Long,Female,1,Damage
+64,Mandy,64,Marksman,Epic,Long,Female,1,Damage
 65,R-T,65,Damage Dealer,Mythic,Very Long,Male,1,Transform
 66,Willow,66,Controller,Mythic,Long,Female,1,CC
 67,Maisie,67,Marksman,Epic,Long,Female,1,"Damage, CC"

@@ -25,7 +25,7 @@ while True:
         continue
     diff = compare_stats(df, guess_stats, answer_stats)
     if diff[0] == 1:
-        print("You got it! The correct brawler was ", answer_stats["Name"])
+        print("You got it! The correct brawler was", answer_stats["Name"])
         break
     else:
         corr, wrong = find_result_cols(df, diff)
