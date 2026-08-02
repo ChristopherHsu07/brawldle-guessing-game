@@ -13,3 +13,6 @@ Created "answer sheet" containing brawler stats 👍
 
 - The general idea that I'm planning for this is that I basically have entirely backend logic in my code rn. Once I make frontend, it will just be interactable by client, then makes API calls to /src backend to return logic.
 ---------------------------------------------------------------------------------
+3) Convert game logic from CLI -> servered backend (IP)
+- I decided to use Fast API since the backend is pretty lightweight
+- Starting with just a GET home and POST guess

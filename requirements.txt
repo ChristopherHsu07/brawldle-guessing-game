@@ -1,2 +1,5 @@
 pandas
 pytest
+fastapi
+uvicorn[standard]
+httpx
