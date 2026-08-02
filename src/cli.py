@@ -20,10 +20,10 @@ _SHORT_HEADERS = {
     "brawler number": "Brawler Number",
     "Role": "Role",
     "Rarity": "Rarity",
-    "Attack Range": "Range",
+    "Attack Range": "Attack Range",
     "Gender": "Gender",
-    "Attacks per Ammo": "Ammo",
-    "Super Type": "Super",
+    "Attacks per Ammo": "Attacks per Ammo",
+    "Super Type": "Super Type",
 }
 
 
