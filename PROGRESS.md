@@ -7,3 +7,4 @@ Created "answer sheet" containing brawler stats 👍
 
 2) Create game logic for guessing
 - Made very crude logic for working game in python terminal, currently only tracks binary, yes or no
+- Converted to OOP based guessin game, hopefully will translate to UI more easily
