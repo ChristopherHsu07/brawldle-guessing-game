@@ -11,11 +11,14 @@ import uuid
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel, Field
 
 from src.catalog import BrawlerCatalog
 from src.session import GameAlreadyOverError, GameSession, InvalidGuessError
+
+SESSION_COOKIE = "brawldle_session"
+SESSION_COOKIE_MAX_AGE = 24 * 60 * 60  # 24 hours
 
 sessions: dict[str, GameSession] = {}
 catalog: BrawlerCatalog | None = None
@@ -34,7 +37,6 @@ app = FastAPI(title="Brawldle", lifespan=lifespan)
 
 
 class GuessRequest(BaseModel):
-    session_id: str
     guess: str = Field(min_length=1)
 
 
@@ -51,6 +53,24 @@ def _get_session(session_id: str) -> GameSession:
     return session
 
 
+def _session_from_cookie(request: Request) -> tuple[str, GameSession]:
+    session_id = request.cookies.get(SESSION_COOKIE)
+    if not session_id:
+        raise HTTPException(status_code=404, detail="Unknown session_id.")
+    return session_id, _get_session(session_id)
+
+
+def _set_session_cookie(response: Response, session_id: str) -> None:
+    response.set_cookie(
+        key=SESSION_COOKIE,
+        value=session_id,
+        max_age=SESSION_COOKIE_MAX_AGE,
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
+
+
 def _suggest(name: str, cat: BrawlerCatalog) -> str | None:
     matches = difflib.get_close_matches(
         name.strip(), cat.all_names(), n=1, cutoff=0.6
@@ -59,11 +79,21 @@ def _suggest(name: str, cat: BrawlerCatalog) -> str | None:
 
 
 @app.get("/")
-def home() -> dict[str, Any]:
+def home(request: Request, response: Response) -> dict[str, Any]:
     cat = _require_catalog()
+    cookie_id = request.cookies.get(SESSION_COOKIE)
+    if cookie_id and cookie_id in sessions:
+        session = sessions[cookie_id]
+        return {
+            "session_id": cookie_id,
+            "brawler_count": len(cat),
+            "state": session.to_dict(),
+        }
+
     session = GameSession.new(cat)
     session_id = str(uuid.uuid4())
     sessions[session_id] = session
+    _set_session_cookie(response, session_id)
     return {
         "session_id": session_id,
         "brawler_count": len(cat),
@@ -72,9 +102,9 @@ def home() -> dict[str, Any]:
 
 
 @app.post("/guess")
-def submit_guess(body: GuessRequest) -> dict[str, Any]:
+def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
     cat = _require_catalog()
-    session = _get_session(body.session_id)
+    _session_id, session = _session_from_cookie(request)
 
     try:
         result = session.make_guess(body.guess)
@@ -87,7 +117,10 @@ def submit_guess(body: GuessRequest) -> dict[str, Any]:
     except GameAlreadyOverError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from None
 
+    state = session.state()
     return {
         "result": result.to_dict(),
-        "state": session.to_dict(),
+        "status": state.status.value,
+        "guess_count": state.guess_count,
+        "answer_name": state.answer_name,
     }

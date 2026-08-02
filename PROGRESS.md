@@ -16,3 +16,4 @@ Created "answer sheet" containing brawler stats 👍
 3) Convert game logic from CLI -> servered backend (IP)
 - I decided to use Fast API since the backend is pretty lightweight
 - Starting with just a GET home and POST guess
+- Opted for using cookies to manage browser memory, to preserve guesses if someone closes the tab or smth. Also just more intuitive than looking up session id each time
