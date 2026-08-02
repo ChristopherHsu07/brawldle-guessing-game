@@ -47,6 +47,8 @@ def test_compare_binary_match_and_miss(catalog: BrawlerCatalog) -> None:
     assert by_col["Rarity"].status == MatchStatus.MISS
     assert by_col["Attacks per Ammo"].value == 6
     assert by_col["Attacks per Ammo"].status == MatchStatus.MISS
+    # Damage overlaps Shelly's "CC, Damage" → partial, not miss
+    assert by_col["Super Type"].status == MatchStatus.PARTIAL
 
 
 def test_compare_identical_is_all_match(catalog: BrawlerCatalog) -> None:
@@ -54,6 +56,26 @@ def test_compare_identical_is_all_match(catalog: BrawlerCatalog) -> None:
     assert shelly is not None
     results = compare_guess(shelly, shelly)
     assert all(r.status == MatchStatus.MATCH for r in results)
+
+
+def test_super_type_partial_and_miss(catalog: BrawlerCatalog) -> None:
+    shelly = catalog.get_by_name("Shelly")  # CC, Damage
+    colt = catalog.get_by_name("Colt")  # Damage
+    bull = catalog.get_by_name("Bull")  # CC, Damage, Debuff, Movement
+    poco = catalog.get_by_name("Poco")  # Heal
+    assert shelly and colt and bull and poco
+
+    def super_status(guess_name: str, answer_name: str) -> MatchStatus:
+        guess = catalog.get_by_name(guess_name)
+        answer = catalog.get_by_name(answer_name)
+        assert guess and answer
+        by_col = {r.column: r for r in compare_guess(guess, answer)}
+        return by_col["Super Type"].status
+
+    assert super_status("Shelly", "Shelly") == MatchStatus.MATCH
+    assert super_status("Colt", "Shelly") == MatchStatus.PARTIAL
+    assert super_status("Bull", "Shelly") == MatchStatus.PARTIAL
+    assert super_status("Poco", "Colt") == MatchStatus.MISS
 
 
 def test_session_invalid_guess_does_not_count(catalog: BrawlerCatalog) -> None:

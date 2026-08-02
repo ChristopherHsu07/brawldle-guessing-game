@@ -10,6 +10,7 @@ from src.session import GameAlreadyOverError, GameSession, InvalidGuessError
 # ANSI colors
 _RESET = "\033[0m"
 _GREEN = "\033[42m\033[30m"  # black on green
+_ORANGE = "\033[48;5;208m\033[30m"  # black on orange
 _GRAY = "\033[100m\033[97m"  # white on gray
 _BOLD = "\033[1m"
 _DIM = "\033[2m"
@@ -29,6 +30,8 @@ def _colorize(text: str, status: MatchStatus, width: int) -> str:
     padded = f" {text} ".center(width)
     if status == MatchStatus.MATCH:
         return f"{_GREEN}{padded}{_RESET}"
+    if status == MatchStatus.PARTIAL:
+        return f"{_ORANGE}{padded}{_RESET}"
     return f"{_GRAY}{padded}{_RESET}"
 
 
@@ -85,8 +88,9 @@ Commands:
   quit / exit   Leave the game
 
 Each guess shows your brawler's attributes:
-  {_GREEN} green {_RESET}  = matches the answer
-  {_GRAY} gray  {_RESET}  = does not match
+  {_GREEN} green  {_RESET}  = matches the answer
+  {_ORANGE} orange {_RESET}  = Super Type shares some tags (half right)
+  {_GRAY} gray   {_RESET}  = does not match
 
 Attributes: {cols}
 
