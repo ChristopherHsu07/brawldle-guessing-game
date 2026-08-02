@@ -4,16 +4,16 @@ brawlers_data = "brawlers.csv"
 
 df = pd.read_csv(brawlers_data, header = 0)
 
-def find_result_cols(df, diff):
+def find_result_cols(df, diff, guess_stats):
     corr = []
     wrong = []
     index = 2
     for stat in df.columns:
         if stat != "id" and stat != "Name":
             if diff[index] == 1:
-                corr.append(stat)
+                corr.append((stat, guess_stats[stat]))
             else:
-                wrong.append(stat)
+                wrong.append((stat, guess_stats[stat]))
             index += 1
     return corr, wrong
 
@@ -28,6 +28,6 @@ while True:
         print("You got it! The correct brawler was", answer_stats["Name"])
         break
     else:
-        corr, wrong = find_result_cols(df, diff)
+        corr, wrong = find_result_cols(df, diff, guess_stats)
         print("You were correct about", corr)
         print("You were incorrect about", wrong)
