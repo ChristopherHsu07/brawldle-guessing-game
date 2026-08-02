@@ -78,6 +78,37 @@ def test_super_type_partial_and_miss(catalog: BrawlerCatalog) -> None:
     assert super_status("Poco", "Colt") == MatchStatus.MISS
 
 
+def test_brawler_number_higher_lower(catalog: BrawlerCatalog) -> None:
+    shelly = catalog.get_by_name("Shelly")  # Original 15
+    colt = catalog.get_by_name("Colt")  # Original 15
+    gene = catalog.get_by_name("Gene")  # 22
+    griff = catalog.get_by_name("Griff")  # 50
+    assert shelly and colt and gene and griff
+
+    def number_result(guess_name: str, answer_name: str):
+        guess = catalog.get_by_name(guess_name)
+        answer = catalog.get_by_name(answer_name)
+        assert guess and answer
+        by_col = {r.column: r for r in compare_guess(guess, answer)}
+        return by_col["brawler number"]
+
+    gene_vs_shelly = number_result("Gene", "Shelly")
+    assert gene_vs_shelly.status == MatchStatus.LOWER
+    assert gene_vs_shelly.value == "22"
+
+    shelly_vs_gene = number_result("Shelly", "Gene")
+    assert shelly_vs_gene.status == MatchStatus.HIGHER
+    assert shelly_vs_gene.value == "Original 15"
+
+    shelly_vs_colt = number_result("Shelly", "Colt")
+    assert shelly_vs_colt.status == MatchStatus.MATCH
+    assert shelly_vs_colt.value == "Original 15"
+
+    gene_vs_griff = number_result("Gene", "Griff")
+    assert gene_vs_griff.status == MatchStatus.HIGHER
+    assert gene_vs_griff.value == "22"
+
+
 def test_session_invalid_guess_does_not_count(catalog: BrawlerCatalog) -> None:
     answer = catalog.get_by_name("Shelly")
     assert answer is not None

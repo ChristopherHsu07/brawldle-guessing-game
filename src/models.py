@@ -17,10 +17,12 @@ ATTRIBUTE_COLUMNS: tuple[str, ...] = (
 
 
 class MatchStatus(str, Enum):
-    """Per-attribute feedback. HIGHER / LOWER reserved for later."""
+    """Per-attribute feedback."""
 
     MATCH = "match"
     PARTIAL = "partial"
+    HIGHER = "higher"
+    LOWER = "lower"
     MISS = "miss"
 
 

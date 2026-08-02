@@ -11,6 +11,7 @@ from src.session import GameAlreadyOverError, GameSession, InvalidGuessError
 _RESET = "\033[0m"
 _GREEN = "\033[42m\033[30m"  # black on green
 _ORANGE = "\033[48;5;208m\033[30m"  # black on orange
+_CYAN = "\033[46m\033[30m"  # black on cyan (higher/lower)
 _GRAY = "\033[100m\033[97m"  # white on gray
 _BOLD = "\033[1m"
 _DIM = "\033[2m"
@@ -26,12 +27,23 @@ _SHORT_HEADERS = {
 }
 
 
+def _display_value(value: object, status: MatchStatus) -> str:
+    text = str(value)
+    if status == MatchStatus.HIGHER:
+        return f"{text} ↑"
+    if status == MatchStatus.LOWER:
+        return f"{text} ↓"
+    return text
+
+
 def _colorize(text: str, status: MatchStatus, width: int) -> str:
     padded = f" {text} ".center(width)
     if status == MatchStatus.MATCH:
         return f"{_GREEN}{padded}{_RESET}"
     if status == MatchStatus.PARTIAL:
         return f"{_ORANGE}{padded}{_RESET}"
+    if status in (MatchStatus.HIGHER, MatchStatus.LOWER):
+        return f"{_CYAN}{padded}{_RESET}"
     return f"{_GRAY}{padded}{_RESET}"
 
 
@@ -40,7 +52,10 @@ def _column_widths(history: list[GuessResult]) -> dict[str, int]:
     for col_index, col in enumerate(ATTRIBUTE_COLUMNS):
         header = _SHORT_HEADERS[col]
         max_val = max(
-            (len(str(g.attributes[col_index].value)) for g in history),
+            (
+                len(_display_value(g.attributes[col_index].value, g.attributes[col_index].status))
+                for g in history
+            ),
             default=0,
         )
         # +2 for padding spaces inside the cell
@@ -65,7 +80,8 @@ def format_history(history: list[GuessResult]) -> str:
         row = [f"{guess.guess_name:<{name_w}}"]
         for i, col in enumerate(ATTRIBUTE_COLUMNS):
             attr = guess.attributes[i]
-            row.append(_colorize(str(attr.value), attr.status, widths[col]))
+            label = _display_value(attr.value, attr.status)
+            row.append(_colorize(label, attr.status, widths[col]))
         lines.append("  ".join(row))
     return "\n".join(lines)
 
@@ -90,7 +106,10 @@ Commands:
 Each guess shows your brawler's attributes:
   {_GREEN} green  {_RESET}  = matches the answer
   {_ORANGE} orange {_RESET}  = Super Type shares some tags (half right)
+  {_CYAN} cyan   {_RESET}  = brawler number is higher (↑) or lower (↓) than the answer
   {_GRAY} gray   {_RESET}  = does not match
+
+Brawler Number: Original 15 counts as the lowest tier; later brawlers use their roster number.
 
 Attributes: {cols}
 
