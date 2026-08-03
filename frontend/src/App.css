@@ -1,51 +1,215 @@
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
+/* Theme adapted from brawl.css — reset + Brawl Stars look */
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #bafff7;
+  font-family: 'Lilita One', sans-serif;
+  font-weight: normal;
+  text-shadow: -2px 2px black, 0 1px black, 1px 0 black, 0 -1px black;
+  color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: 'Lilita One', sans-serif;
+  text-shadow: -2px 2px black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+/* Page shell */
 .app {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 1.5rem;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 960px;
+  margin-top: 1rem;
+  box-shadow: 0 0 15px 3px #00000047;
+  background-image: url(https://github.com/raharisonAina/BrawlStars/blob/main/assets/main-bg.png?raw=true);
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #050e25;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.wrapper-pattern {
+  min-height: 100%;
+  padding: 1.25rem 1.5rem 1.75rem;
+  background: url(https://github.com/raharisonAina/BrawlStars/blob/main/assets/bg-pattern-on-green.png?raw=true);
+  background-repeat: repeat;
+  animation: pattern-scroll 15s linear infinite;
+}
+
+@keyframes pattern-scroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -128px;
+  }
+}
+
+.game-content {
+  position: relative;
+  z-index: 1;
+}
+
+.top-bar {
+  height: 8px;
+  width: 100%;
+  background-color: #060908;
+  margin: -1.25rem -1.5rem 1.25rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin-bottom: 0.35rem;
 }
 
 .subtitle {
-  margin-top: 0;
-  color: #444;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  color: #fff;
+  font-size: 1.05rem;
 }
 
+/* Guess form */
 .guess-form {
   display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  gap: 0.75rem;
+  margin: 0 auto 1rem;
+  max-width: 520px;
+  align-items: stretch;
 }
 
 .guess-form input {
   flex: 1;
-  padding: 0.4rem 0.6rem;
-  font-size: 1rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 1.05rem;
+  font-family: 'Lilita One', sans-serif;
+  color: #fff;
+  background: #1a2233;
+  border: 2px solid #050e25;
+  border-radius: 5px;
+  text-shadow: -1px 1px black;
+  transform: skewX(-6deg);
 }
 
-.guess-form button {
-  padding: 0.4rem 0.9rem;
-  font-size: 1rem;
-  cursor: pointer;
+.guess-form input::placeholder {
+  color: #9ab1fa;
+  text-shadow: none;
 }
 
-.guess-form button:disabled,
 .guess-form input:disabled {
-  cursor: not-allowed;
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.error {
-  color: #b00020;
+/* Yellow skewed CTA (from brawl .button.button-yellow-bottom) */
+.button {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 1.15rem;
+  color: white;
+  text-transform: uppercase;
+  border-radius: 5px;
+  border: 1.5px solid black;
+  box-shadow: 0 4px 0 #00000047;
+  transform: skewX(-9deg);
+  transition: 0.15s;
+  padding: 0.45rem 1.1rem;
+  min-width: 100px;
+  background: #eec308;
 }
 
-.win {
-  font-weight: bold;
+.button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  height: 4px;
+  background-color: #fbef43;
+  border-radius: 4px 4px 0 0;
+  pointer-events: none;
 }
 
+.button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  height: 4px;
+  background-color: #a5532d;
+  border-radius: 0 0 4px 4px;
+  pointer-events: none;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.95) skewX(-9deg);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.button-label {
+  position: relative;
+  z-index: 2;
+}
+
+.message {
+  text-align: center;
+  margin: 0.5rem 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.message.error {
+  color: #ff7a7b;
+}
+
+.message.win {
+  color: #fbef43;
+}
+
+/* Guess table */
 .table-wrap {
   overflow-x: auto;
   margin-top: 1rem;
@@ -59,41 +223,46 @@ body {
 
 .guess-table th,
 .guess-table td {
-  border: 1px solid #ccc;
-  padding: 0.35rem 0.5rem;
+  border: 2px solid #050e25;
+  padding: 0.4rem 0.5rem;
   text-align: center;
 }
 
 .guess-table th {
-  background: #f0f0f0;
-  font-weight: 600;
+  background: #343c50;
+  color: #fff;
+  font-weight: normal;
 }
 
 .guess-name {
   text-align: left;
-  font-weight: 600;
   white-space: nowrap;
+  background: #1a2233;
 }
 
 .cell {
   white-space: nowrap;
+  text-shadow: -1px 1px black, 0 1px black;
 }
 
 /* CLI-matching status colors */
 .status-match {
   background: #22c55e;
   color: #000;
+  text-shadow: none;
 }
 
 .status-partial {
   background: #ff8c00;
   color: #000;
+  text-shadow: none;
 }
 
 .status-higher,
 .status-lower {
   background: #22d3ee;
   color: #000;
+  text-shadow: none;
 }
 
 .status-miss {

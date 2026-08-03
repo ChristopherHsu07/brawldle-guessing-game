@@ -78,57 +78,71 @@ export default function App() {
   const guessesWord = guessCount === 1 ? 'guess' : 'guesses'
 
   return (
-    <main className="app">
-      <h1>Brawldle</h1>
-      <p className="subtitle">Guess the brawler by their stats.</p>
+    <div className="app">
+      <div className="main-container">
+        <div className="wrapper-pattern">
+          <div className="top-bar" />
+          <div className="game-content">
+            <h1 className="title">Brawldle</h1>
+            <p className="subtitle">Guess the brawler by their stats.</p>
 
-      <form className="guess-form" onSubmit={onSubmit}>
-        <input
-          type="text"
-          value={guess}
-          onChange={(e) => setGuess(e.target.value)}
-          placeholder="Guess a brawler"
-          disabled={loading || won || submitting}
-          autoComplete="off"
-        />
-        <button type="submit" disabled={loading || won || submitting || !guess.trim()}>
-          Guess
-        </button>
-      </form>
+            <form className="guess-form" onSubmit={onSubmit}>
+              <input
+                type="text"
+                value={guess}
+                onChange={(e) => setGuess(e.target.value)}
+                placeholder="Guess a brawler"
+                disabled={loading || won || submitting}
+                autoComplete="off"
+              />
+              <button
+                type="submit"
+                className="button"
+                disabled={loading || won || submitting || !guess.trim()}
+              >
+                <span className="button-label">Guess</span>
+              </button>
+            </form>
 
-      {error ? <p className="error">{error}</p> : null}
-      {won ? (
-        <p className="win">
-          You got it! {answerName} in {guessCount} {guessesWord}.
-        </p>
-      ) : null}
+            {error ? <p className="message error">{error}</p> : null}
+            {won ? (
+              <p className="message win">
+                You got it! {answerName} in {guessCount} {guessesWord}.
+              </p>
+            ) : null}
 
-      {history.length > 0 ? (
-        <div className="table-wrap">
-          <table className="guess-table">
-            <thead>
-              <tr>
-                <th>Guess</th>
-                {COLUMN_HEADERS.map((col) => (
-                  <th key={col.key}>{col.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((row, index) => (
-                <tr key={`${row.guess_name}-${index}`}>
-                  <td className="guess-name">{row.guess_name}</td>
-                  {row.attributes.map((attr) => (
-                    <td key={attr.column} className={`cell status-${attr.status}`}>
-                      {displayValue(attr.value, attr.status)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            {history.length > 0 ? (
+              <div className="table-wrap">
+                <table className="guess-table">
+                  <thead>
+                    <tr>
+                      <th>Guess</th>
+                      {COLUMN_HEADERS.map((col) => (
+                        <th key={col.key}>{col.label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((row, index) => (
+                      <tr key={`${row.guess_name}-${index}`}>
+                        <td className="guess-name">{row.guess_name}</td>
+                        {row.attributes.map((attr) => (
+                          <td
+                            key={attr.column}
+                            className={`cell status-${attr.status}`}
+                          >
+                            {displayValue(attr.value, attr.status)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+          </div>
         </div>
-      ) : null}
-    </main>
+      </div>
+    </div>
   )
 }
