@@ -84,7 +84,7 @@ export default function App() {
           <div className="top-bar" />
           <div className="game-content">
             <h1 className="title">Brawldle</h1>
-            <p className="subtitle">Guess the brawler by their stats.</p>
+            <p className="subtitle">Guess the brawler by their stats</p>
 
             <form className="guess-form" onSubmit={onSubmit}>
               <input
