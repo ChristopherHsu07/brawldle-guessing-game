@@ -17,3 +17,8 @@ Created "answer sheet" containing brawler stats 👍
 - I decided to use Fast API since the backend is pretty lightweight
 - Starting with just a GET home and POST guess
 - Opted for using cookies to manage browser memory, to preserve guesses if someone closes the tab or smth. Also just more intuitive than looking up session id each time
+---------------------------------------------------------------------------------
+4) Create basic frontend/UI for game (IP)
+- Using ReactJS + Vite frontend, since that's what I'm familiar with
+- It's a very light app, so the frontend isn't that deep
+- Wired together frontend functions to make API calls
