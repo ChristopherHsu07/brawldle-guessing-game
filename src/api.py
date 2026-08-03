@@ -81,12 +81,14 @@ def _suggest(name: str, cat: BrawlerCatalog) -> str | None:
 @app.get("/")
 def home(request: Request, response: Response) -> dict[str, Any]:
     cat = _require_catalog()
+    brawler_names = sorted(cat.all_names(), key=str.casefold)
     cookie_id = request.cookies.get(SESSION_COOKIE)
     if cookie_id and cookie_id in sessions:
         session = sessions[cookie_id]
         return {
             "session_id": cookie_id,
             "brawler_count": len(cat),
+            "brawler_names": brawler_names,
             "state": session.to_dict(),
         }
 
@@ -97,6 +99,7 @@ def home(request: Request, response: Response) -> dict[str, Any]:
     return {
         "session_id": session_id,
         "brawler_count": len(cat),
+        "brawler_names": brawler_names,
         "state": session.to_dict(),
     }
 

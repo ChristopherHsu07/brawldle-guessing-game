@@ -18,6 +18,9 @@ def test_home_starts_new_game() -> None:
         assert data["state"]["history"] == []
         assert data["state"]["answer_name"] is None
         assert api.SESSION_COOKIE in response.cookies
+        names = data["brawler_names"]
+        assert len(names) >= 100
+        assert names == sorted(names, key=str.casefold)
 
 
 def test_home_resumes_same_session_via_cookie() -> None:

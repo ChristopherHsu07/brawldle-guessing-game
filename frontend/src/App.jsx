@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { startOrResumeGame, submitGuess } from './api.js'
 import './App.css'
 
@@ -24,10 +24,16 @@ export default function App() {
   const [status, setStatus] = useState('in_progress')
   const [guessCount, setGuessCount] = useState(0)
   const [answerName, setAnswerName] = useState(null)
+  const [brawlerNames, setBrawlerNames] = useState([])
   const [guess, setGuess] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [highlightIndex, setHighlightIndex] = useState(0)
+  const inputRef = useRef(null)
+  const listRef = useRef(null)
+  const blurTimeoutRef = useRef(null)
 
   useEffect(() => {
     let cancelled = false
@@ -39,6 +45,7 @@ export default function App() {
         setStatus(data.state.status)
         setGuessCount(data.state.guess_count)
         setAnswerName(data.state.answer_name)
+        setBrawlerNames(data.brawler_names ?? [])
         setError('')
       } catch (err) {
         if (!cancelled) {
@@ -50,8 +57,74 @@ export default function App() {
     })()
     return () => {
       cancelled = true
+      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current)
     }
   }, [])
+
+  const suggestions = useMemo(() => {
+    const query = guess.trim().toLowerCase()
+    if (!query) return brawlerNames
+    return brawlerNames.filter((name) => name.toLowerCase().startsWith(query))
+  }, [brawlerNames, guess])
+
+  const won = status === 'won'
+  const showSuggestions =
+    menuOpen && !won && !loading && !submitting && suggestions.length > 0
+
+  useEffect(() => {
+    setHighlightIndex(0)
+  }, [guess, menuOpen])
+
+  useEffect(() => {
+    if (!showSuggestions || !listRef.current) return
+    const active = listRef.current.querySelector('.suggestion.active')
+    active?.scrollIntoView({ block: 'nearest' })
+  }, [highlightIndex, showSuggestions])
+
+  function selectSuggestion(name) {
+    setGuess(name)
+    setMenuOpen(false)
+    setHighlightIndex(0)
+    inputRef.current?.focus()
+  }
+
+  function onInputChange(event) {
+    setGuess(event.target.value)
+    setMenuOpen(true)
+  }
+
+  function onInputFocus() {
+    if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current)
+    if (!won && !loading) setMenuOpen(true)
+  }
+
+  function onInputBlur() {
+    blurTimeoutRef.current = setTimeout(() => setMenuOpen(false), 150)
+  }
+
+  function onInputKeyDown(event) {
+    if (!showSuggestions) {
+      if (event.key === 'Escape') setMenuOpen(false)
+      return
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setHighlightIndex((i) => Math.min(i + 1, suggestions.length - 1))
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setHighlightIndex((i) => Math.max(i - 1, 0))
+    } else if (event.key === 'Enter' && menuOpen) {
+      const selected = suggestions[highlightIndex]
+      if (selected && guess.trim().toLowerCase() !== selected.toLowerCase()) {
+        event.preventDefault()
+        selectSuggestion(selected)
+      }
+    } else if (event.key === 'Escape') {
+      event.preventDefault()
+      setMenuOpen(false)
+    }
+  }
 
   async function onSubmit(event) {
     event.preventDefault()
@@ -59,6 +132,7 @@ export default function App() {
     if (!trimmed || status === 'won' || submitting) return
 
     setSubmitting(true)
+    setMenuOpen(false)
     setError('')
     try {
       const data = await submitGuess(trimmed)
@@ -74,7 +148,6 @@ export default function App() {
     }
   }
 
-  const won = status === 'won'
   const guessesWord = guessCount === 1 ? 'guess' : 'guesses'
 
   return (
@@ -87,14 +160,50 @@ export default function App() {
             <p className="subtitle">Guess the brawler by their stats</p>
 
             <form className="guess-form" onSubmit={onSubmit}>
-              <input
-                type="text"
-                value={guess}
-                onChange={(e) => setGuess(e.target.value)}
-                placeholder="Guess a brawler"
-                disabled={loading || won || submitting}
-                autoComplete="off"
-              />
+              <div className="guess-input-wrap">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={guess}
+                  onChange={onInputChange}
+                  onFocus={onInputFocus}
+                  onBlur={onInputBlur}
+                  onKeyDown={onInputKeyDown}
+                  placeholder="Guess a brawler"
+                  disabled={loading || won || submitting}
+                  autoComplete="off"
+                  role="combobox"
+                  aria-expanded={showSuggestions}
+                  aria-controls="brawler-suggestions"
+                  aria-autocomplete="list"
+                />
+                {showSuggestions ? (
+                  <ul
+                    id="brawler-suggestions"
+                    ref={listRef}
+                    className="suggestions"
+                    role="listbox"
+                  >
+                    {suggestions.map((name, index) => (
+                      <li key={name} role="option" aria-selected={index === highlightIndex}>
+                        <button
+                          type="button"
+                          className={
+                            index === highlightIndex
+                              ? 'suggestion active'
+                              : 'suggestion'
+                          }
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={() => selectSuggestion(name)}
+                          onMouseEnter={() => setHighlightIndex(index)}
+                        >
+                          {name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
               <button
                 type="submit"
                 className="button"
