@@ -1,6 +1,6 @@
 """FastAPI REST layer for Brawldle.
 
-Run the server with:
+Run from the backend/ directory:
   uvicorn src.api:app --reload
 """
 

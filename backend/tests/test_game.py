@@ -9,7 +9,7 @@ from src.compare import compare_guess
 from src.models import ATTRIBUTE_COLUMNS, GameStatus, MatchStatus
 from src.session import GameAlreadyOverError, GameSession, InvalidGuessError
 
-CSV_PATH = Path(__file__).resolve().parent.parent / "brawlers.csv"
+CSV_PATH = Path(__file__).resolve().parent.parent / "data" / "brawlers.csv"
 
 
 @pytest.fixture

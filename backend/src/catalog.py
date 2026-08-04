@@ -6,7 +6,7 @@ import pandas as pd
 
 from src.models import ATTRIBUTE_COLUMNS, Brawler
 
-DEFAULT_CSV = Path(__file__).resolve().parent.parent / "brawlers.csv"
+DEFAULT_CSV = Path(__file__).resolve().parent.parent / "data" / "brawlers.csv"
 
 
 class BrawlerCatalog:

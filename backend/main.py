@@ -1,5 +1,7 @@
 """Brawldle entry points.
 
+Run from the backend/ directory:
+
 CLI (default):
   python main.py
 
