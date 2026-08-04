@@ -35,32 +35,15 @@ p {
   text-shadow: -2px 2px black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
-/* Page shell */
+/* Page shell — full-screen scrolling pattern, no card box */
 .app {
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 3rem;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-}
-
-.main-container {
-  width: 100%;
-  max-width: 960px;
-  margin-top: 1rem;
-  box-shadow: 0 0 15px 3px #00000047;
-  background-image: url(https://github.com/raharisonAina/BrawlStars/blob/main/assets/main-bg.png?raw=true);
-  background-size: cover;
-  background-position: center;
-  border: 2px solid #050e25;
-  border-radius: 4px;
-  overflow: visible;
-}
-
-.wrapper-pattern {
-  min-height: 100%;
-  padding: 1.25rem 1.5rem 1.75rem;
-  background: url(https://github.com/raharisonAina/BrawlStars/blob/main/assets/bg-pattern-on-green.png?raw=true);
+  background-color: #49b3e1;
+  background-image: url(https://github.com/raharisonAina/BrawlStars/blob/main/assets/bg-pattern-on-green.png?raw=true);
   background-repeat: repeat;
   animation: pattern-scroll 15s linear infinite;
 }
@@ -74,16 +57,15 @@ p {
   }
 }
 
+.main-container {
+  width: 100%;
+  max-width: 960px;
+  margin-top: 0.5rem;
+}
+
 .game-content {
   position: relative;
   z-index: 1;
-}
-
-.top-bar {
-  height: 8px;
-  width: 100%;
-  background-color: #060908;
-  margin: -1.25rem -1.5rem 1.25rem;
 }
 
 .title {

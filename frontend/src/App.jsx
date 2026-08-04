@@ -169,112 +169,109 @@ export default function App() {
   return (
     <div className="app">
       <div className="main-container">
-        <div className="wrapper-pattern">
-          <div className="top-bar" />
-          <div className="game-content">
-            <h1 className="title">Brawldle</h1>
-            <p className="subtitle">Guess the brawler by their stats</p>
+        <div className="game-content">
+          <h1 className="title">Brawldle</h1>
+          <p className="subtitle">Guess the brawler by their stats</p>
 
-            <form className="guess-form" onSubmit={onSubmit}>
-              <div className="guess-input-wrap">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={guess}
-                  onChange={onInputChange}
-                  onFocus={onInputFocus}
-                  onBlur={onInputBlur}
-                  onKeyDown={onInputKeyDown}
-                  placeholder="Guess a brawler"
-                  disabled={loading || won || submitting}
-                  autoComplete="off"
-                  role="combobox"
-                  aria-expanded={showSuggestions}
-                  aria-controls="brawler-suggestions"
-                  aria-autocomplete="list"
-                />
-                {showSuggestions ? (
-                  <ul
-                    id="brawler-suggestions"
-                    ref={listRef}
-                    className="suggestions"
-                    role="listbox"
-                  >
-                    {suggestions.map((name, index) => (
-                      <li key={name} role="option" aria-selected={index === highlightIndex}>
-                        <button
-                          type="button"
-                          className={
-                            index === highlightIndex
-                              ? 'suggestion active'
-                              : 'suggestion'
-                          }
-                          onMouseDown={(event) => event.preventDefault()}
-                          onClick={() => selectSuggestion(name)}
-                          onMouseEnter={() => setHighlightIndex(index)}
-                        >
-                          <BrawlerPin name={name} className="brawler-pin pin-sm" />
-                          <span>{name}</span>
-                        </button>
-                      </li>
+          <form className="guess-form" onSubmit={onSubmit}>
+            <div className="guess-input-wrap">
+              <input
+                ref={inputRef}
+                type="text"
+                value={guess}
+                onChange={onInputChange}
+                onFocus={onInputFocus}
+                onBlur={onInputBlur}
+                onKeyDown={onInputKeyDown}
+                placeholder="Guess a brawler"
+                disabled={loading || won || submitting}
+                autoComplete="off"
+                role="combobox"
+                aria-expanded={showSuggestions}
+                aria-controls="brawler-suggestions"
+                aria-autocomplete="list"
+              />
+              {showSuggestions ? (
+                <ul
+                  id="brawler-suggestions"
+                  ref={listRef}
+                  className="suggestions"
+                  role="listbox"
+                >
+                  {suggestions.map((name, index) => (
+                    <li key={name} role="option" aria-selected={index === highlightIndex}>
+                      <button
+                        type="button"
+                        className={
+                          index === highlightIndex
+                            ? 'suggestion active'
+                            : 'suggestion'
+                        }
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => selectSuggestion(name)}
+                        onMouseEnter={() => setHighlightIndex(index)}
+                      >
+                        <BrawlerPin name={name} className="brawler-pin pin-sm" />
+                        <span>{name}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+            <button
+              type="submit"
+              className="button"
+              disabled={loading || won || submitting || !guess.trim()}
+            >
+              <span className="button-label">Guess</span>
+            </button>
+          </form>
+
+          {error ? <p className="message error">{error}</p> : null}
+          {won ? (
+            <p className="message win">
+              You got it! {answerName} in {guessCount} {guessesWord}.
+            </p>
+          ) : null}
+
+          {history.length > 0 ? (
+            <div className="table-wrap">
+              <table className="guess-table">
+                <thead>
+                  <tr>
+                    <th>Guess</th>
+                    {COLUMN_HEADERS.map((col) => (
+                      <th key={col.key}>{col.label}</th>
                     ))}
-                  </ul>
-                ) : null}
-              </div>
-              <button
-                type="submit"
-                className="button"
-                disabled={loading || won || submitting || !guess.trim()}
-              >
-                <span className="button-label">Guess</span>
-              </button>
-            </form>
-
-            {error ? <p className="message error">{error}</p> : null}
-            {won ? (
-              <p className="message win">
-                You got it! {answerName} in {guessCount} {guessesWord}.
-              </p>
-            ) : null}
-
-            {history.length > 0 ? (
-              <div className="table-wrap">
-                <table className="guess-table">
-                  <thead>
-                    <tr>
-                      <th>Guess</th>
-                      {COLUMN_HEADERS.map((col) => (
-                        <th key={col.key}>{col.label}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((row, index) => (
+                    <tr key={`${row.guess_name}-${index}`}>
+                      <td className="guess-name">
+                        <div className="guess-cell">
+                          <BrawlerPin
+                            name={row.guess_name}
+                            className="brawler-pin pin-lg"
+                          />
+                          <span>{row.guess_name}</span>
+                        </div>
+                      </td>
+                      {row.attributes.map((attr) => (
+                        <td
+                          key={attr.column}
+                          className={`cell status-${attr.status}`}
+                        >
+                          {displayValue(attr.value, attr.status)}
+                        </td>
                       ))}
                     </tr>
-                  </thead>
-                  <tbody>
-                    {history.map((row, index) => (
-                      <tr key={`${row.guess_name}-${index}`}>
-                        <td className="guess-name">
-                          <div className="guess-cell">
-                            <BrawlerPin
-                              name={row.guess_name}
-                              className="brawler-pin pin-lg"
-                            />
-                            <span>{row.guess_name}</span>
-                          </div>
-                        </td>
-                        {row.attributes.map((attr) => (
-                          <td
-                            key={attr.column}
-                            className={`cell status-${attr.status}`}
-                          >
-                            {displayValue(attr.value, attr.status)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : null}
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
