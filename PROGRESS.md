@@ -22,3 +22,6 @@ Created "answer sheet" containing brawler stats 👍
 - Using ReactJS + Vite frontend, since that's what I'm familiar with
 - It's a very light app, so the frontend isn't that deep
 - Wired together frontend functions to make API calls
+- Pretty satisfied with frontend ATP. Things I added:
+- Found brawl stars theme and icons online, added those
+- Added tile flipping like wordle, and minorly changed the way super type handles partial corrects
