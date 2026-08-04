@@ -53,7 +53,7 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 52,Meg,52,Tank,Legendary,Long,Female,2,"Damage, Transform"
 53,Lola,53,Damage Dealer,Epic,Long,Female,6,Summon
 54,Fang,54,Assassin,Mythic,Very Long,Male,1,"Damage, Mobility"
-55,Eve,55,Damage Dealer,Mythic,Very Long,Female,1,Summon
+55,Eve,55,Damage Dealer,Mythic,Very Long,Female,3,Summon
 56,Janet,56,Marksman,Mythic,Normal,Female,1,"Damage, Mobility"
 57,Bonnie,57,Marksman,Epic,Long,Female,1,"Damage, Mobility, Transform"
 58,Otis,58,Controller,Mythic,Long,Male,3,CC
