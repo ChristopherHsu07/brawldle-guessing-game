@@ -175,7 +175,28 @@ function BrawlerPin({ name, className }) {
   )
 }
 
+const PORTRAIT_MOBILE_QUERY = '(max-width: 900px) and (orientation: portrait)'
+
+function useIsPortraitMobile() {
+  const [matches, setMatches] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(PORTRAIT_MOBILE_QUERY).matches
+      : false,
+  )
+
+  useEffect(() => {
+    const mql = window.matchMedia(PORTRAIT_MOBILE_QUERY)
+    const onChange = () => setMatches(mql.matches)
+    onChange()
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
+
+  return matches
+}
+
 export default function App() {
+  const showRotatePrompt = useIsPortraitMobile()
   const [history, setHistory] = useState([])
   const [status, setStatus] = useState('in_progress')
   const [guessCount, setGuessCount] = useState(0)
@@ -338,6 +359,17 @@ export default function App() {
 
   return (
     <div className="app">
+      {showRotatePrompt ? (
+        <div className="rotate-prompt" role="dialog" aria-modal="true" aria-live="polite">
+          <div className="rotate-prompt-card">
+            <div className="rotate-phone" aria-hidden="true">
+              <div className="rotate-phone-body" />
+              <div className="rotate-arrow" />
+            </div>
+            <p>Please turn your phone sideways to play</p>
+          </div>
+        </div>
+      ) : null}
       <div className="main-container">
         <div className="game-content">
           <h1 className="title">Brawldle</h1>

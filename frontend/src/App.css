@@ -72,6 +72,126 @@ p {
   z-index: 1;
 }
 
+.rotate-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: #49b3e1;
+  background-image: url(https://github.com/raharisonAina/BrawlStars/blob/main/assets/bg-pattern-on-green.png?raw=true);
+  background-repeat: repeat;
+  animation: pattern-scroll 15s linear infinite;
+}
+
+.rotate-prompt-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 18rem;
+  padding: 1.5rem 1.25rem;
+  background: #1a2233;
+  border: 3px solid #050e25;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 0 #00000055;
+  text-align: center;
+}
+
+.rotate-prompt-card p {
+  font-size: 1.15rem;
+  line-height: 1.35;
+  color: #FFB921;
+}
+
+.rotate-phone {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rotate-phone-body {
+  position: relative;
+  width: 1.85rem;
+  height: 3.1rem;
+  border: 3px solid #fff;
+  border-radius: 0.4rem;
+  background: #343c50;
+  box-shadow: 0 2px 0 #00000055;
+  animation: phone-tilt 1.6s ease-in-out infinite;
+}
+
+.rotate-phone-body::before {
+  content: '';
+  position: absolute;
+  top: 0.35rem;
+  left: 50%;
+  width: 0.55rem;
+  height: 0.2rem;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #9ab1fa;
+}
+
+.rotate-arrow {
+  position: absolute;
+  right: 0.15rem;
+  top: 0.35rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-top: 3px solid #FFB921;
+  border-right: 3px solid #FFB921;
+  border-radius: 0 0.2rem 0 0;
+  transform: rotate(45deg);
+  animation: arrow-nudge 1.6s ease-in-out infinite;
+}
+
+.rotate-arrow::after {
+  content: '';
+  position: absolute;
+  top: -0.35rem;
+  right: -0.15rem;
+  border: 0.35rem solid transparent;
+  border-bottom-color: #FFB921;
+  transform: rotate(45deg);
+}
+
+@keyframes phone-tilt {
+  0%,
+  20% {
+    transform: rotate(0deg);
+  }
+  50%,
+  70% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes arrow-nudge {
+  0%,
+  20% {
+    opacity: 0.45;
+    transform: rotate(45deg) translate(0, 0);
+  }
+  50%,
+  70% {
+    opacity: 1;
+    transform: rotate(45deg) translate(0.15rem, -0.15rem);
+  }
+  100% {
+    opacity: 0.45;
+    transform: rotate(45deg) translate(0, 0);
+  }
+}
+
 .title {
   font-size: 3rem;
   letter-spacing: 0.03em;
