@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { startOrResumeGame, submitGuess } from './api.js'
+import { getPinUrl } from './pins.js'
 import './App.css'
 
 const COLUMN_HEADERS = [
@@ -17,6 +18,21 @@ function displayValue(value, status) {
   if (status === 'higher') return `${text} ↑`
   if (status === 'lower') return `${text} ↓`
   return text
+}
+
+function BrawlerPin({ name, className }) {
+  const src = getPinUrl(name)
+  if (!src) return null
+  return (
+    <img
+      className={className}
+      src={src}
+      alt=""
+      onError={(event) => {
+        event.currentTarget.style.visibility = 'hidden'
+      }}
+    />
+  )
 }
 
 export default function App() {
@@ -197,7 +213,8 @@ export default function App() {
                           onClick={() => selectSuggestion(name)}
                           onMouseEnter={() => setHighlightIndex(index)}
                         >
-                          {name}
+                          <BrawlerPin name={name} className="brawler-pin pin-sm" />
+                          <span>{name}</span>
                         </button>
                       </li>
                     ))}
@@ -234,7 +251,15 @@ export default function App() {
                   <tbody>
                     {history.map((row, index) => (
                       <tr key={`${row.guess_name}-${index}`}>
-                        <td className="guess-name">{row.guess_name}</td>
+                        <td className="guess-name">
+                          <div className="guess-cell">
+                            <BrawlerPin
+                              name={row.guess_name}
+                              className="brawler-pin pin-lg"
+                            />
+                            <span>{row.guess_name}</span>
+                          </div>
+                        </td>
                         {row.attributes.map((attr) => (
                           <td
                             key={attr.column}
