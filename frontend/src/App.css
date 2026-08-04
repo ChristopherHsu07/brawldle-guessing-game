@@ -297,7 +297,7 @@ p {
 .guess-table th,
 .guess-table td {
   border: 2px solid #050e25;
-  padding: 0.4rem 0.5rem;
+  padding: 0;
   text-align: center;
 }
 
@@ -305,6 +305,7 @@ p {
   background: #343c50;
   color: #fff;
   font-weight: normal;
+  padding: 0.4rem 0.5rem;
 }
 
 .guess-name {
@@ -312,34 +313,169 @@ p {
   white-space: nowrap;
   background: #1a2233;
   vertical-align: middle;
+  padding: 0.25rem 0.5rem;
 }
 
-.cell {
+.cell-slot {
+  perspective: 600px;
+  background: #1a2233;
+  min-width: 4.5rem;
+}
+
+.cell-face {
   white-space: nowrap;
   text-shadow: -1px 1px black, 0 1px black;
+  padding: 0.55rem 0.5rem;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  background: #1a2233;
+  color: #fff;
 }
 
-/* CLI-matching status colors */
-.status-match {
+.cell-face.status-match {
   background: #22c55e;
   color: #000;
   text-shadow: none;
 }
 
-.status-partial {
+.cell-face.flip.status-match {
+  animation: tile-flip-match 0.5s ease both;
+  animation-delay: var(--flip-delay, 0s);
+}
+
+@keyframes tile-flip-match {
+  0% {
+    transform: rotateX(0deg);
+    background: #1a2233;
+    color: #fff;
+    text-shadow: -1px 1px black;
+  }
+  49% {
+    transform: rotateX(90deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  50% {
+    transform: rotateX(90deg);
+    background: #22c55e;
+    color: #000;
+    text-shadow: none;
+  }
+  100% {
+    transform: rotateX(0deg);
+    background: #22c55e;
+    color: #000;
+    text-shadow: none;
+  }
+}
+
+.cell-face.status-partial {
   background: #ff8c00;
   color: #000;
   text-shadow: none;
 }
 
-.status-higher,
-.status-lower {
+.cell-face.flip.status-partial {
+  animation: tile-flip-partial 0.5s ease both;
+  animation-delay: var(--flip-delay, 0s);
+}
+
+@keyframes tile-flip-partial {
+  0% {
+    transform: rotateX(0deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  49% {
+    transform: rotateX(90deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  50% {
+    transform: rotateX(90deg);
+    background: #ff8c00;
+    color: #000;
+    text-shadow: none;
+  }
+  100% {
+    transform: rotateX(0deg);
+    background: #ff8c00;
+    color: #000;
+    text-shadow: none;
+  }
+}
+
+.cell-face.status-higher,
+.cell-face.status-lower {
   background: #22d3ee;
   color: #000;
   text-shadow: none;
 }
 
-.status-miss {
+.cell-face.flip.status-higher,
+.cell-face.flip.status-lower {
+  animation: tile-flip-hl 0.5s ease both;
+  animation-delay: var(--flip-delay, 0s);
+}
+
+@keyframes tile-flip-hl {
+  0% {
+    transform: rotateX(0deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  49% {
+    transform: rotateX(90deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  50% {
+    transform: rotateX(90deg);
+    background: #22d3ee;
+    color: #000;
+    text-shadow: none;
+  }
+  100% {
+    transform: rotateX(0deg);
+    background: #22d3ee;
+    color: #000;
+    text-shadow: none;
+  }
+}
+
+.cell-face.status-miss {
   background: #6b7280;
   color: #fff;
+}
+
+.cell-face.flip.status-miss {
+  animation: tile-flip-miss 0.5s ease both;
+  animation-delay: var(--flip-delay, 0s);
+}
+
+@keyframes tile-flip-miss {
+  0% {
+    transform: rotateX(0deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  49% {
+    transform: rotateX(90deg);
+    background: #1a2233;
+    color: #fff;
+  }
+  50% {
+    transform: rotateX(90deg);
+    background: #6b7280;
+    color: #fff;
+  }
+  100% {
+    transform: rotateX(0deg);
+    background: #6b7280;
+    color: #fff;
+  }
 }

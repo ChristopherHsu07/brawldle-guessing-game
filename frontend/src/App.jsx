@@ -47,9 +47,12 @@ export default function App() {
   const [submitting, setSubmitting] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [highlightIndex, setHighlightIndex] = useState(0)
+  const [flippingRow, setFlippingRow] = useState(null)
   const inputRef = useRef(null)
   const listRef = useRef(null)
   const blurTimeoutRef = useRef(null)
+  const FLIP_STAGGER_MS = 320
+  const FLIP_DURATION_MS = 500
 
   useEffect(() => {
     let cancelled = false
@@ -84,8 +87,9 @@ export default function App() {
   }, [brawlerNames, guess])
 
   const won = status === 'won'
+  const isFlipping = flippingRow !== null
   const showSuggestions =
-    menuOpen && !won && !loading && !submitting && suggestions.length > 0
+    menuOpen && !won && !loading && !submitting && !isFlipping && suggestions.length > 0
 
   useEffect(() => {
     setHighlightIndex(0)
@@ -96,6 +100,14 @@ export default function App() {
     const active = listRef.current.querySelector('.suggestion.active')
     active?.scrollIntoView({ block: 'nearest' })
   }, [highlightIndex, showSuggestions])
+
+  useEffect(() => {
+    if (flippingRow === null) return
+    const attrCount = history[flippingRow]?.attributes?.length ?? COLUMN_HEADERS.length
+    const totalMs = (attrCount - 1) * FLIP_STAGGER_MS + FLIP_DURATION_MS + 50
+    const timer = setTimeout(() => setFlippingRow(null), totalMs)
+    return () => clearTimeout(timer)
+  }, [flippingRow, history])
 
   function selectSuggestion(name) {
     setGuess(name)
@@ -111,7 +123,7 @@ export default function App() {
 
   function onInputFocus() {
     if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current)
-    if (!won && !loading) setMenuOpen(true)
+    if (!won && !loading && !isFlipping) setMenuOpen(true)
   }
 
   function onInputBlur() {
@@ -145,14 +157,18 @@ export default function App() {
   async function onSubmit(event) {
     event.preventDefault()
     const trimmed = guess.trim()
-    if (!trimmed || status === 'won' || submitting) return
+    if (!trimmed || status === 'won' || submitting || isFlipping) return
 
     setSubmitting(true)
     setMenuOpen(false)
     setError('')
     try {
       const data = await submitGuess(trimmed)
-      setHistory((prev) => [...prev, data.result])
+      setHistory((prev) => {
+        const next = [...prev, data.result]
+        setFlippingRow(next.length - 1)
+        return next
+      })
       setStatus(data.status)
       setGuessCount(data.guess_count)
       setAnswerName(data.answer_name)
@@ -184,7 +200,7 @@ export default function App() {
                 onBlur={onInputBlur}
                 onKeyDown={onInputKeyDown}
                 placeholder="Guess a brawler"
-                disabled={loading || won || submitting}
+                disabled={loading || won || submitting || isFlipping}
                 autoComplete="off"
                 role="combobox"
                 aria-expanded={showSuggestions}
@@ -222,14 +238,14 @@ export default function App() {
             <button
               type="submit"
               className="button"
-              disabled={loading || won || submitting || !guess.trim()}
+              disabled={loading || won || submitting || isFlipping || !guess.trim()}
             >
               <span className="button-label">Guess</span>
             </button>
           </form>
 
           {error ? <p className="message error">{error}</p> : null}
-          {won ? (
+          {won && !isFlipping ? (
             <p className="message win">
               You got it! {answerName} in {guessCount} {guessesWord}.
             </p>
@@ -247,27 +263,42 @@ export default function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {history.map((row, index) => (
-                    <tr key={`${row.guess_name}-${index}`}>
-                      <td className="guess-name">
-                        <div className="guess-cell">
-                          <BrawlerPin
-                            name={row.guess_name}
-                            className="brawler-pin pin-lg"
-                          />
-                          <span>{row.guess_name}</span>
-                        </div>
-                      </td>
-                      {row.attributes.map((attr) => (
-                        <td
-                          key={attr.column}
-                          className={`cell status-${attr.status}`}
-                        >
-                          {displayValue(attr.value, attr.status)}
+                  {history.map((row, index) => {
+                    const rowFlipping = flippingRow === index
+                    return (
+                      <tr key={`${row.guess_name}-${index}`}>
+                        <td className="guess-name">
+                          <div className="guess-cell">
+                            <BrawlerPin
+                              name={row.guess_name}
+                              className="brawler-pin pin-lg"
+                            />
+                            <span>{row.guess_name}</span>
+                          </div>
                         </td>
-                      ))}
-                    </tr>
-                  ))}
+                        {row.attributes.map((attr, attrIndex) => (
+                          <td key={attr.column} className="cell-slot">
+                            <div
+                              className={
+                                rowFlipping
+                                  ? `cell-face status-${attr.status} flip`
+                                  : `cell-face status-${attr.status}`
+                              }
+                              style={
+                                rowFlipping
+                                  ? {
+                                      '--flip-delay': `${attrIndex * (FLIP_STAGGER_MS / 1000)}s`,
+                                    }
+                                  : undefined
+                              }
+                            >
+                              {displayValue(attr.value, attr.status)}
+                            </div>
+                          </td>
+                        ))}
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
