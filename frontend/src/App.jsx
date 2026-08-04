@@ -1,7 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { startOrResumeGame, submitGuess } from './api.js'
 import { getPinUrl } from './pins.js'
 import './App.css'
+
+const SUPER_CATEGORIES = [
+  'Buff',
+  'CC',
+  'Damage',
+  'Debuff',
+  'DOT',
+  'Heal',
+  'Mobility',
+  'Summon',
+  'Transform',
+]
+
+const STATIC_HEADER_TOOLTIPS = {
+  'Attacks per Ammo':
+    'The number of bullets the brawler shoots per ammo (e.g. Colt: 6, Piper: 1)',
+  'Super Type': `Super categories include ${SUPER_CATEGORIES.slice(0, -1).join(', ')}, and ${SUPER_CATEGORIES.at(-1)}`,
+}
 
 const COLUMN_HEADERS = [
   { key: 'brawler number', label: 'Brawler Number' },
@@ -12,6 +31,33 @@ const COLUMN_HEADERS = [
   { key: 'Attacks per Ammo', label: 'Attacks per Ammo' },
   { key: 'Super Type', label: 'Super Type' },
 ]
+
+function ordinal(n) {
+  const mod100 = n % 100
+  if (mod100 >= 11 && mod100 <= 13) return `${n}th`
+  switch (n % 10) {
+    case 1:
+      return `${n}st`
+    case 2:
+      return `${n}nd`
+    case 3:
+      return `${n}rd`
+    default:
+      return `${n}th`
+  }
+}
+
+function brawlerNumberTooltip(guessName, value, status) {
+  const text = String(value).trim()
+  const rankPart =
+    text === 'Original 15'
+      ? `${guessName} is one of the original 15 brawlers to be released`
+      : `${guessName} is the ${ordinal(Number(text))} brawler to be released`
+
+  if (status === 'higher') return `${rankPart} Guess a newer brawler`
+  if (status === 'lower') return `${rankPart} Guess an older brawler`
+  return `${rankPart}.`
+}
 
 function displayValue(value, status) {
   const text = String(value)
@@ -37,6 +83,81 @@ function AttributeContent({ attr }) {
     )
   }
   return displayValue(attr.value, attr.status)
+}
+
+function HeaderTooltip({ label, tip }) {
+  const triggerRef = useRef(null)
+  const tipRef = useRef(null)
+  const [open, setOpen] = useState(false)
+  const [coords, setCoords] = useState(null)
+
+  const placeTooltip = useEffectEvent(() => {
+    const trigger = triggerRef.current
+    const tipEl = tipRef.current
+    if (!trigger || !tipEl) return
+
+    const rect = trigger.getBoundingClientRect()
+    const tipRect = tipEl.getBoundingClientRect()
+    const gap = 8
+    const pad = 8
+
+    let top = rect.bottom + gap
+    if (top + tipRect.height > window.innerHeight - pad) {
+      top = rect.top - tipRect.height - gap
+    }
+    top = Math.max(pad, Math.min(top, window.innerHeight - tipRect.height - pad))
+
+    let left = rect.left + rect.width / 2 - tipRect.width / 2
+    left = Math.max(pad, Math.min(left, window.innerWidth - tipRect.width - pad))
+
+    setCoords({ top, left })
+  })
+
+  useLayoutEffect(() => {
+    if (!open) {
+      setCoords(null)
+      return
+    }
+    placeTooltip()
+    const onReposition = () => placeTooltip()
+    window.addEventListener('scroll', onReposition, true)
+    window.addEventListener('resize', onReposition)
+    return () => {
+      window.removeEventListener('scroll', onReposition, true)
+      window.removeEventListener('resize', onReposition)
+    }
+  }, [open, tip])
+
+  if (!tip) return label
+
+  return (
+    <>
+      <span
+        ref={triggerRef}
+        className="header-tip"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        tabIndex={0}
+      >
+        {label}
+      </span>
+      {open
+        ? createPortal(
+            <div
+              ref={tipRef}
+              className={coords ? 'tooltip-overlay' : 'tooltip-overlay tooltip-overlay-measure'}
+              style={coords ? { top: coords.top, left: coords.left } : undefined}
+              role="tooltip"
+            >
+              {tip}
+            </div>,
+            document.body,
+          )
+        : null}
+    </>
+  )
 }
 
 function BrawlerPin({ name, className }) {
@@ -201,6 +322,20 @@ export default function App() {
 
   const guessesWord = guessCount === 1 ? 'guess' : 'guesses'
 
+  const headerTooltips = useMemo(() => {
+    const tips = { ...STATIC_HEADER_TOOLTIPS }
+    const first = history[0]
+    if (!first) return tips
+    const attr = first.attributes?.find((a) => a.column === 'brawler number')
+    if (!attr) return tips
+    tips['brawler number'] = brawlerNumberTooltip(
+      first.guess_name,
+      attr.value,
+      attr.status,
+    )
+    return tips
+  }, [history])
+
   return (
     <div className="app">
       <div className="main-container">
@@ -277,7 +412,12 @@ export default function App() {
                   <tr>
                     <th>Guess</th>
                     {COLUMN_HEADERS.map((col) => (
-                      <th key={col.key}>{col.label}</th>
+                      <th key={col.key}>
+                        <HeaderTooltip
+                          label={col.label}
+                          tip={headerTooltips[col.key]}
+                        />
+                      </th>
                     ))}
                   </tr>
                 </thead>

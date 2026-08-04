@@ -308,6 +308,37 @@ p {
   padding: 0.4rem 0.5rem;
 }
 
+.header-tip {
+  cursor: help;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.55);
+  outline: none;
+}
+
+.tooltip-overlay {
+  position: fixed;
+  z-index: 9999;
+  width: max-content;
+  max-width: min(16rem, calc(100vw - 1rem));
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.35rem;
+  border: 2px solid #050e25;
+  background: #1a2233;
+  color: #fff;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  text-align: center;
+  text-shadow: -1px 1px black;
+  box-shadow: 0 3px 0 #00000055;
+  pointer-events: none;
+}
+
+.tooltip-overlay-measure {
+  visibility: hidden;
+  top: 0;
+  left: 0;
+}
+
 .guess-name {
   text-align: center;
   white-space: nowrap;
