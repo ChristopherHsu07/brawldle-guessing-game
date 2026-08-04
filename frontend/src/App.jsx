@@ -480,6 +480,18 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        <p className="made-by">
+          <span>Made by</span>
+          <a
+            className="made-by-link"
+            href="https://github.com/ChristopherHsu07"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @ChristopherHsu07
+          </a>
+        </p>
       </div>
     </div>
   )
