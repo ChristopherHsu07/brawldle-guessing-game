@@ -464,6 +464,21 @@ export default function App() {
               </table>
             </div>
           ) : null}
+
+          <div className="color-legend" aria-label="Color meanings">
+            <div className="legend-item">
+              <span className="legend-swatch legend-correct" aria-hidden="true" />
+              <span>Correct</span>
+            </div>
+            <div className="legend-item">
+              <span className="legend-swatch legend-partial" aria-hidden="true" />
+              <span>Partial</span>
+            </div>
+            <div className="legend-item">
+              <span className="legend-swatch legend-miss" aria-hidden="true" />
+              <span>Incorrect</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

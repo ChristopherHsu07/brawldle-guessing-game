@@ -282,6 +282,42 @@ p {
   color: #fbef43;
 }
 
+.color-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+}
+
+.legend-swatch {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 0.3rem;
+  border: 2px solid #050e25;
+  box-shadow: 0 2px 0 #00000055;
+  flex-shrink: 0;
+}
+
+.legend-correct {
+  background: #22c55e;
+}
+
+.legend-partial {
+  background: #ff8c00;
+}
+
+.legend-miss {
+  background: #6b7280;
+}
+
 /* Guess table */
 .table-wrap {
   overflow-x: auto;
