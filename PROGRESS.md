@@ -26,3 +26,6 @@ Created "answer sheet" containing brawler stats 👍
 - Found brawl stars theme and icons online, added those
 - Added tile flipping like wordle, and minorly changed the way super type handles partial corrects
 - Fixed some of the pngs and format stuff, then added tooltips on how to play, as well as my github at the bottom. Frontend should be good for now.
+---------------------------------------------------------------------------------
+5) Dockerize
+- I'm going to split my frontend and backend into two different containers. Since they use completely different things, I think it'd be more organized just to do it that way.
