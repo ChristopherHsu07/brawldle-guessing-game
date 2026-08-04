@@ -13,15 +13,16 @@ Created "answer sheet" containing brawler stats 👍
 
 - The general idea that I'm planning for this is that I basically have entirely backend logic in my code rn. Once I make frontend, it will just be interactable by client, then makes API calls to /src backend to return logic.
 ---------------------------------------------------------------------------------
-3) Convert game logic from CLI -> servered backend (IP)
+3) Convert game logic from CLI -> servered backend (IP) 👍
 - I decided to use Fast API since the backend is pretty lightweight
 - Starting with just a GET home and POST guess
 - Opted for using cookies to manage browser memory, to preserve guesses if someone closes the tab or smth. Also just more intuitive than looking up session id each time
 ---------------------------------------------------------------------------------
-4) Create basic frontend/UI for game (IP)
+4) Create basic frontend/UI for game 👍
 - Using ReactJS + Vite frontend, since that's what I'm familiar with
 - It's a very light app, so the frontend isn't that deep
 - Wired together frontend functions to make API calls
 - Pretty satisfied with frontend ATP. Things I added:
 - Found brawl stars theme and icons online, added those
 - Added tile flipping like wordle, and minorly changed the way super type handles partial corrects
+- Fixed some of the pngs and format stuff, then added tooltips on how to play, as well as my github at the bottom. Frontend should be good for now.
