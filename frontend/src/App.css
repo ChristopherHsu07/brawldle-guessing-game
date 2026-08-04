@@ -313,20 +313,21 @@ p {
   white-space: nowrap;
   background: #1a2233;
   vertical-align: middle;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.65rem;
+  min-height: 5.25rem;
 }
 
 .cell-slot {
   perspective: 600px;
   background: #1a2233;
-  min-width: 4.5rem;
+  min-width: 5rem;
 }
 
 .cell-face {
   white-space: nowrap;
   text-shadow: -1px 1px black, 0 1px black;
-  padding: 0.55rem 0.5rem;
-  min-height: 2.5rem;
+  padding: 0.75rem 0.55rem;
+  min-height: 5.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -334,6 +335,31 @@ p {
   backface-visibility: hidden;
   background: #1a2233;
   color: #fff;
+}
+
+.cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Blank face until flip midpoint, then reveal text/circles */
+.cell-face.flip > .cell-content {
+  animation: tile-reveal-content 0.5s ease both;
+  animation-delay: var(--flip-delay, 0s);
+}
+
+@keyframes tile-reveal-content {
+  0%,
+  49.9% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  50%,
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .cell-face.status-match {
@@ -351,13 +377,10 @@ p {
   0% {
     transform: rotateX(0deg);
     background: #1a2233;
-    color: #fff;
-    text-shadow: -1px 1px black;
   }
-  49% {
+  49.9% {
     transform: rotateX(90deg);
     background: #1a2233;
-    color: #fff;
   }
   50% {
     transform: rotateX(90deg);
@@ -388,12 +411,10 @@ p {
   0% {
     transform: rotateX(0deg);
     background: #1a2233;
-    color: #fff;
   }
-  49% {
+  49.9% {
     transform: rotateX(90deg);
     background: #1a2233;
-    color: #fff;
   }
   50% {
     transform: rotateX(90deg);
@@ -426,12 +447,10 @@ p {
   0% {
     transform: rotateX(0deg);
     background: #1a2233;
-    color: #fff;
   }
-  49% {
+  49.9% {
     transform: rotateX(90deg);
     background: #1a2233;
-    color: #fff;
   }
   50% {
     transform: rotateX(90deg);
@@ -461,12 +480,10 @@ p {
   0% {
     transform: rotateX(0deg);
     background: #1a2233;
-    color: #fff;
   }
-  49% {
+  49.9% {
     transform: rotateX(90deg);
     background: #1a2233;
-    color: #fff;
   }
   50% {
     transform: rotateX(90deg);
@@ -478,4 +495,43 @@ p {
     background: #6b7280;
     color: #fff;
   }
+}
+
+/* Super Type per-tag circles */
+.super-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  align-items: center;
+  max-width: 11.5rem;
+}
+
+.super-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 50%;
+  border: 2px solid #050e25;
+  font-size: 0.68rem;
+  line-height: 1.1;
+  text-align: center;
+  padding: 0.25rem;
+  word-break: break-word;
+  box-shadow: 0 2px 0 #00000055;
+  text-shadow: -1px 1px black;
+  overflow: hidden;
+}
+
+.super-tag.status-match {
+  background: #22c55e;
+  color: #000;
+  text-shadow: none;
+}
+
+.super-tag.status-miss {
+  background: #6b7280;
+  color: #fff;
 }

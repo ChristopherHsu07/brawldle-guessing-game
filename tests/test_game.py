@@ -49,6 +49,10 @@ def test_compare_binary_match_and_miss(catalog: BrawlerCatalog) -> None:
     assert by_col["Attacks per Ammo"].status == MatchStatus.MISS
     # Damage overlaps Shelly's "CC, Damage" → partial, not miss
     assert by_col["Super Type"].status == MatchStatus.PARTIAL
+    assert by_col["Super Type"].tags is not None
+    assert [(t.value, t.status) for t in by_col["Super Type"].tags] == [
+        ("Damage", MatchStatus.MATCH),
+    ]
 
 
 def test_compare_identical_is_all_match(catalog: BrawlerCatalog) -> None:
@@ -61,21 +65,44 @@ def test_compare_identical_is_all_match(catalog: BrawlerCatalog) -> None:
 def test_super_type_partial_and_miss(catalog: BrawlerCatalog) -> None:
     shelly = catalog.get_by_name("Shelly")  # CC, Damage
     colt = catalog.get_by_name("Colt")  # Damage
-    bull = catalog.get_by_name("Bull")  # CC, Damage, Debuff, Movement
+    bull = catalog.get_by_name("Bull")  # CC, Damage, Debuff, Mobility
     poco = catalog.get_by_name("Poco")  # Heal
     assert shelly and colt and bull and poco
 
-    def super_status(guess_name: str, answer_name: str) -> MatchStatus:
+    def super_result(guess_name: str, answer_name: str):
         guess = catalog.get_by_name(guess_name)
         answer = catalog.get_by_name(answer_name)
         assert guess and answer
         by_col = {r.column: r for r in compare_guess(guess, answer)}
-        return by_col["Super Type"].status
+        return by_col["Super Type"]
 
-    assert super_status("Shelly", "Shelly") == MatchStatus.MATCH
-    assert super_status("Colt", "Shelly") == MatchStatus.PARTIAL
-    assert super_status("Bull", "Shelly") == MatchStatus.PARTIAL
-    assert super_status("Poco", "Colt") == MatchStatus.MISS
+    shelly_self = super_result("Shelly", "Shelly")
+    assert shelly_self.status == MatchStatus.MATCH
+    assert [(t.value, t.status) for t in shelly_self.tags] == [
+        ("CC", MatchStatus.MATCH),
+        ("Damage", MatchStatus.MATCH),
+    ]
+
+    colt_vs_shelly = super_result("Colt", "Shelly")
+    assert colt_vs_shelly.status == MatchStatus.PARTIAL
+    assert [(t.value, t.status) for t in colt_vs_shelly.tags] == [
+        ("Damage", MatchStatus.MATCH),
+    ]
+
+    bull_vs_shelly = super_result("Bull", "Shelly")
+    assert bull_vs_shelly.status == MatchStatus.PARTIAL
+    assert [(t.value, t.status) for t in bull_vs_shelly.tags] == [
+        ("CC", MatchStatus.MATCH),
+        ("Damage", MatchStatus.MATCH),
+        ("Debuff", MatchStatus.MISS),
+        ("Mobility", MatchStatus.MISS),
+    ]
+
+    poco_vs_colt = super_result("Poco", "Colt")
+    assert poco_vs_colt.status == MatchStatus.MISS
+    assert [(t.value, t.status) for t in poco_vs_colt.tags] == [
+        ("Heal", MatchStatus.MISS),
+    ]
 
 
 def test_brawler_number_higher_lower(catalog: BrawlerCatalog) -> None:

@@ -20,6 +20,25 @@ function displayValue(value, status) {
   return text
 }
 
+function AttributeContent({ attr }) {
+  if (attr.column === 'Super Type' && Array.isArray(attr.tags) && attr.tags.length > 0) {
+    return (
+      <div className="super-tags">
+        {attr.tags.map((tag) => (
+          <span
+            key={tag.value}
+            className={`super-tag status-${tag.status}`}
+            title={tag.value}
+          >
+            {tag.value}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  return displayValue(attr.value, attr.status)
+}
+
 function BrawlerPin({ name, className }) {
   const src = getPinUrl(name)
   if (!src) return null
@@ -292,7 +311,9 @@ export default function App() {
                                   : undefined
                               }
                             >
-                              {displayValue(attr.value, attr.status)}
+                              <div className="cell-content">
+                                <AttributeContent attr={attr} />
+                              </div>
                             </div>
                           </td>
                         ))}

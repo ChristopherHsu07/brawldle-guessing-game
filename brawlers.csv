@@ -1,7 +1,7 @@
 id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Type
 1,Shelly,Original 15,Damage Dealer,Starting Brawler,Long,Female,5,"CC, Damage"
 2,Colt,Original 15,Damage Dealer,Rare,Long,Male,6,Damage
-3,Bull,Original 15,Tank,Rare,Normal,Male,5,"CC, Damage, Debuff, Movement"
+3,Bull,Original 15,Tank,Rare,Normal,Male,5,"CC, Damage, Debuff, Mobility"
 4,Brock,Original 15,Marksman,Rare,Long,Male,1,Damage
 5,Rico,Original 15,Damage Dealer,Super Rare,Very Long,Male,5,Damage
 6,Spike,Original 15,Damage Dealer,Legendary,Long,Male,1,"Debuff, DOT"
@@ -9,59 +9,59 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 8,Jessie,Original 15,Controller,Super Rare,Long,Female,1,Summon
 9,Nita,Original 15,Damage Dealer,Rare,Normal,Female,1,Summon
 10,Dynamike,Original 15,Artillery,Super Rare,Long,Male,2,"CC, Damage"
-11,El Primo,Original 15,Tank,Rare,Short,Female,4,"CC, Damage, Movement"
+11,El Primo,Original 15,Tank,Rare,Short,Female,4,"CC, Damage, Mobility"
 12,Mortis,Original 15,Assassin,Mythic,Short,Male,1,"Damage, Heal"
-13,Crow,Original 15,Assassin,Legendary,Long,Male,3,"Damage, DOT, Movement"
+13,Crow,Original 15,Assassin,Legendary,Long,Male,3,"Damage, DOT, Mobility"
 14,Poco,Original 15,Support,Rare,Long,Male,1,Heal
 15,Bo,Original 15,Controller,Epic,Long,Male,3,"CC, Damage"
-16,Piper,16,Marksman,Epic,Very Long,Female,1,"CC, Damage, Movement"
+16,Piper,16,Marksman,Epic,Very Long,Female,1,"CC, Damage, Mobility"
 17,Pam,17,Support,Epic,Long,Female,9,Summon
 18,Tara,18,Damage Dealer,Mythic,Long,Female,3,"CC, Damage"
-19,Darryl,19,Tank,Super Rare,Normal,Male,10,"CC, Damage, Movement"
+19,Darryl,19,Tank,Super Rare,Normal,Male,10,"CC, Damage, Mobility"
 20,Penny,20,Artillery,Super Rare,Long,Female,1,Summon
 21,Frank,21,Tank,Epic,Normal,Male,1,"CC, Damage"
 22,Gene,22,Controller,Mythic,Very Long,Male,1,"CC, Damage"
 23,Tick,23,Artillery,Super Rare,Long,Male,3,Summon
-24,Leon,24,Assassin,Legendary,Very Long,Male,4,"Buff, Movement"
+24,Leon,24,Assassin,Legendary,Very Long,Male,4,"Buff, Mobility"
 25,Rosa,25,Tank,Rare,Short,Female,3,Buff
-26,Carl,26,Damage Dealer,Super Rare,Long,Male,1,"Damage, Movement"
+26,Carl,26,Damage Dealer,Super Rare,Long,Male,1,"Damage, Mobility"
 27,Bibi,27,Tank,Epic,Short,Female,1,Damage
 28,8-Bit,28,Damage Dealer,Super Rare,Very Long,Genderless,6,Summon
 29,Sandy,29,Controller,Legendary,Normal,Female,1,Buff
 30,Bea,30,Marksman,Epic,Very Long,Female,1,"Damage, Debuff"
 31,Emz,31,Controller,Epic,Normal,Female,1,"Damage, Debuff, DOT"
 32,Mr. P,32,Controller,Mythic,Long,Male,1,Summon
-33,Max,33,Support,Mythic,Long,Female,4,"Buff, Movement"
+33,Max,33,Support,Mythic,Long,Female,4,"Buff, Mobility"
 34,Jacky,34,Tank,Super Rare,Short,Female,1,CC
 35,Gale,35,Controller,Epic,Long,Male,6,"CC, Damage"
 36,Nani,36,Marksman,Epic,Long,Female,3,"CC, Damage"
 37,Sprout,37,Artillery,Mythic,Normal,Genderless,1,CC
-38,Surge,38,Damage Dealer,Legendary,Normal,Male,1,"CC, Movement, Transform"
-39,Colette,39,Damage Dealer,Epic,Long,Female,1,"Damage, Movement"
+38,Surge,38,Damage Dealer,Legendary,Normal,Male,1,"CC, Mobility, Transform"
+39,Colette,39,Damage Dealer,Epic,Long,Female,1,"Damage, Mobility"
 40,Amber,40,Controller,Legendary,Long,Female,1,"Damage, DOT"
 41,Lou,41,Controller,Mythic,Very Long,Male,3,"CC, Debuff, DOT"
 42,Byron,42,Support,Mythic,Very Long,Male,1,"Damage, Heal"
-43,Edgar,43,Assassin,Epic,Short,Male,2,Movement
+43,Edgar,43,Assassin,Epic,Short,Male,2,Mobility
 44,Ruffs,44,Support,Epic,Long,Male,2,"Buff, Damage"
-45,Stu,45,Assassin,Epic,Long,Male,2,"DOT, Movement"
+45,Stu,45,Assassin,Epic,Long,Male,2,"DOT, Mobility"
 46,Belle,46,Marksman,Epic,Very Long,Female,1,"Damage, Debuff"
 47,Squeak,47,Controller,Mythic,Long,Male,1,Damage
 48,Grom,48,Artillery,Epic,Long,Male,1,"CC, Damage"
-49,Buzz,49,Assassin,Mythic,Short,Male,5,"CC, Movement"
+49,Buzz,49,Assassin,Mythic,Short,Male,5,"CC, Mobility"
 50,Griff,50,Controller,Epic,Long,Male,9,Damage
 51,Ash,51,Tank,Epic,Normal,Male,1,Summon
 52,Meg,52,Tank,Legendary,Long,Female,2,"Damage, Transform"
 53,Lola,53,Damage Dealer,Epic,Long,Female,6,Summon
-54,Fang,54,Assassin,Mythic,Very Long,Male,1,"Damage, Movement"
+54,Fang,54,Assassin,Mythic,Very Long,Male,1,"Damage, Mobility"
 55,Eve,55,Damage Dealer,Mythic,Very Long,Female,1,Summon
-56,Janet,56,Marksman,Mythic,Normal,Female,1,"Damage, Movement"
-57,Bonnie,57,Marksman,Epic,Long,Female,1,"Damage, Movement, Transform"
+56,Janet,56,Marksman,Mythic,Normal,Female,1,"Damage, Mobility"
+57,Bonnie,57,Marksman,Epic,Long,Female,1,"Damage, Mobility, Transform"
 58,Otis,58,Controller,Mythic,Long,Male,3,CC
 59,Sam,59,Assassin,Epic,Short,Male,2,Damage
 60,Gus,60,Support,Super Rare,Very Long,Male,1,Buff
 61,Buster,61,Tank,Mythic,Normal,Male,1,Buff
-62,Chester,62,Damage Dealer,Legendary,Long,Male,3,"Buff, CC, Damage, DOT, Debuff, Heal, Movement"
-63,Gray,63,Support,Mythic,Long,Male,1,Movement
+62,Chester,62,Damage Dealer,Legendary,Long,Male,3,"Buff, CC, Damage, DOT, Debuff, Heal, Mobility"
+63,Gray,63,Support,Mythic,Long,Male,1,Mobility
 64,Mandy,64,Marksman,Epic,Long,Female,1,Damage
 65,R-T,65,Damage Dealer,Mythic,Very Long,Male,1,Transform
 66,Willow,66,Controller,Mythic,Long,Female,1,CC
@@ -70,37 +70,37 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 69,Cordelius,69,Assassin,Legendary,Normal,Male,2,CC
 70,Doug,70,Support,Mythic,Short,Male,1,Buff
 71,Pearl,71,Damage Dealer,Epic,Long,Female,6,Damage
-72,Chuck,72,Damage Dealer,Mythic,Normal,Male,3,"Damage, Movement"
+72,Chuck,72,Damage Dealer,Mythic,Normal,Male,3,"Damage, Mobility"
 73,Charlie,73,Controller,Mythic,Long,Female,1,CC
-74,Mico,74,Assassin,Mythic,Normal,Male,1,"CC, Damage, Movement"
-75,Kit,75,Support,Legendary,Short,Male,1,"CC, Damage, Movement"
+74,Mico,74,Assassin,Mythic,Normal,Male,1,"CC, Damage, Mobility"
+75,Kit,75,Support,Legendary,Short,Male,1,"CC, Damage, Mobility"
 76,Larry & Lawrie,76,Artillery,Epic,Long,Male,1,Summon
-77,Melodie,77,Assassin,Mythic,Long,Female,3,Movement
+77,Melodie,77,Assassin,Mythic,Long,Female,3,Mobility
 78,Angelo,78,Marksman,Epic,Very Long,Non-binary,1,"Buff, Damage"
 79,Draco,79,Tank,Legendary,Normal,Male,1,Transform
-80,Lily,80,Assassin,Mythic,Short,Female,1,"Damage, Movement"
-81,Berry,81,Support,Epic,Normal,Male,1,"Damage, DOT, Movement"
+80,Lily,80,Assassin,Mythic,Short,Female,1,"Damage, Mobility"
+81,Berry,81,Support,Epic,Normal,Male,1,"Damage, DOT, Mobility"
 82,Clancy,82,Damage Dealer,Mythic,Long,Male,1,Damage
-83,Moe,83,Damage Dealer,Mythic,Long,Male,1,"Damage, Movement, Transform"
-84,Kenji,84,Assassin,Legendary,Short,Male,1,"Damage, Movement"
-85,Shade,85,Assassin,Epic,Very Short,Genderless,1,"Buff, Movement"
+83,Moe,83,Damage Dealer,Mythic,Long,Male,1,"Damage, Mobility, Transform"
+84,Kenji,84,Assassin,Legendary,Short,Male,1,"Damage, Mobility"
+85,Shade,85,Assassin,Epic,Very Short,Genderless,1,"Buff, Mobility"
 86,Juju,86,Artillery,Mythic,Normal,Female,1,Summon
 87,Meeple,87,Controller,Epic,Long,Non-binary,1,Buff
-88,Ollie,88,Tank,Mythic,Normal,Male,1,"CC, Damage, Movement"
+88,Ollie,88,Tank,Mythic,Normal,Male,1,"CC, Damage, Mobility"
 89,Lumi,89,Damage Dealer,Mythic,Long,Female,1,"Damage, CC"
 90,Finx,90,Controller,Mythic,Long,Male,1,"Buff, Debuff"
 91,Jae-yong,91,Support,Mythic,Long,Male,1,"Buff, Heal, Transform"
-92,Kaze,92,Assassin,Ultra Legendary,Short,Female,1,"CC, Damage, Movement"
-93,Alli,93,Assassin,Mythic,Short,Female,1,"Buff, Movement"
-94,Trunk,94,Tank,Epic,Short,Genderless,1,"Damage, Movement"
+92,Kaze,92,Assassin,Ultra Legendary,Short,Female,1,"CC, Damage, Mobility"
+93,Alli,93,Assassin,Mythic,Short,Female,1,"Buff, Mobility"
+94,Trunk,94,Tank,Epic,Short,Genderless,1,"Damage, Mobility"
 95,Mina,95,Damage Dealer,Mythic,Long,Female,1,"CC, Damage"
 96,Ziggy,96,Controller,Mythic,Long,Male,1,Damage
 97,Pierce,97,Marksman,Legendary,Very Long,Male,1,Damage
-98,Gigi,98,Assassin,Mythic,Short,Female,1,"Damage, Movement"
+98,Gigi,98,Assassin,Mythic,Short,Female,1,"Damage, Mobility"
 99,Glowy,99,Support,Mythic,Long,Male,1,CC
 100,Sirius,100,Controller,Ultra Legendary,Long,Male,2,Summon
 101,Najia,101,Damage Dealer,Mythic,Very Long,Female,1,"DOT, Summon"
-102,Damian,102,Tank,Mythic,Short,Male,1,"CC, Damage, Movement"
-103,Starr Nova,103,Assassin,Mythic,Normal,Female,1,"Movement, Transform"
-104,Bolt,104,Tank,Epic,Short,Male,1,"Damage, DOT, Movement"
-105,Nori,105,Assassin,Legendary,Long,Male,1,"Damage, Movement"
+102,Damian,102,Tank,Mythic,Short,Male,1,"CC, Damage, Mobility"
+103,Starr Nova,103,Assassin,Mythic,Normal,Female,1,"Mobility, Transform"
+104,Bolt,104,Tank,Epic,Short,Male,1,"Damage, DOT, Mobility"
+105,Nori,105,Assassin,Legendary,Long,Male,1,"Damage, Mobility"

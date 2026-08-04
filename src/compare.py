@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.models import ATTRIBUTE_COLUMNS, AttributeResult, Brawler, MatchStatus
+from src.models import (
+    ATTRIBUTE_COLUMNS,
+    AttributeResult,
+    Brawler,
+    MatchStatus,
+    SuperTagResult,
+)
 
 _ORIGINAL_15 = "Original 15"
 
@@ -12,14 +18,42 @@ def _super_tags(value: Any) -> frozenset[str]:
     return frozenset(tag.strip() for tag in text.split(",") if tag.strip())
 
 
-def _compare_super(guess_value: Any, answer_value: Any) -> MatchStatus:
+def _ordered_super_tags(value: Any) -> tuple[str, ...]:
+    """Comma-split tags in order, dropping empties and later duplicates."""
+    text = "" if value is None else str(value)
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for raw in text.split(","):
+        tag = raw.strip()
+        if not tag or tag in seen:
+            continue
+        seen.add(tag)
+        ordered.append(tag)
+    return tuple(ordered)
+
+
+def _compare_super(
+    guess_value: Any, answer_value: Any
+) -> tuple[MatchStatus, tuple[SuperTagResult, ...]]:
     guess_tags = _super_tags(guess_value)
     answer_tags = _super_tags(answer_value)
     if guess_tags == answer_tags:
-        return MatchStatus.MATCH
-    if guess_tags & answer_tags:
-        return MatchStatus.PARTIAL
-    return MatchStatus.MISS
+        status = MatchStatus.MATCH
+    elif guess_tags & answer_tags:
+        status = MatchStatus.PARTIAL
+    else:
+        status = MatchStatus.MISS
+
+    tags = tuple(
+        SuperTagResult(
+            value=tag,
+            status=(
+                MatchStatus.MATCH if tag in answer_tags else MatchStatus.MISS
+            ),
+        )
+        for tag in _ordered_super_tags(guess_value)
+    )
+    return status, tags
 
 
 def _brawler_number_rank(value: Any) -> int:
@@ -46,8 +80,9 @@ def compare_guess(guess: Brawler, answer: Brawler) -> tuple[AttributeResult, ...
     for column in ATTRIBUTE_COLUMNS:
         guess_value = guess.attribute_value(column)
         answer_value = answer.attribute_value(column)
+        tags: tuple[SuperTagResult, ...] | None = None
         if column == "Super Type":
-            status = _compare_super(guess_value, answer_value)
+            status, tags = _compare_super(guess_value, answer_value)
         elif column == "brawler number":
             status = _compare_brawler_number(guess_value, answer_value)
         else:
@@ -57,6 +92,11 @@ def compare_guess(guess: Brawler, answer: Brawler) -> tuple[AttributeResult, ...
                 else MatchStatus.MISS
             )
         results.append(
-            AttributeResult(column=column, value=guess_value, status=status)
+            AttributeResult(
+                column=column,
+                value=guess_value,
+                status=status,
+                tags=tags,
+            )
         )
     return tuple(results)

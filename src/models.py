@@ -45,17 +45,30 @@ class Brawler:
 
 
 @dataclass(frozen=True)
+class SuperTagResult:
+    value: str
+    status: MatchStatus
+
+    def to_dict(self) -> dict[str, Any]:
+        return {"value": self.value, "status": self.status.value}
+
+
+@dataclass(frozen=True)
 class AttributeResult:
     column: str
     value: Any
     status: MatchStatus
+    tags: tuple[SuperTagResult, ...] | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload: dict[str, Any] = {
             "column": self.column,
             "value": self.value,
             "status": self.status.value,
         }
+        if self.tags is not None:
+            payload["tags"] = [t.to_dict() for t in self.tags]
+        return payload
 
 
 @dataclass(frozen=True)
