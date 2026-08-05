@@ -18,8 +18,7 @@ You can either run the project on your machine or run it on Docker.
 git clone https://github.com/ChristopherHsu07/brawldle-guessing-game.git
 ```
 3) From the root, build and run the containers with 
-```
-bash
+```bash
 docker compose up --build
 ```
 Frontend will default to run on localhost port 80.
@@ -27,27 +26,23 @@ Frontend will default to run on localhost port 80.
 ## RUNNING LOCALLY
 1) Make sure you have Node.js installed
 2) cd into frontend folder, then install frontend requirements:
-```
-bash
+```bash
 cd frontend
 npm install
 ```
 cd back to root, then into backend folder and create a virtual environment, then install backend requirements:
-```
-bash
+```bash
 cd ../backend
 python -m venv .venv
 source .venv/bin/activate
 pip install requirements.txt
 ```
 Run backend:
-```
-bash
+```bash
 uvicorn src.api:app --reload
 ```
 cd into frontend, the run frontend:
-```
-bash
+```bash
 cd ../frontend
 npm run dev
 ```
