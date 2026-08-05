@@ -14,8 +14,7 @@ You can either run the project on your machine or run it on Docker.
 ## RUNNING ON DOCKER (RECOMMENDED)
 1) Make sure you have Docker installed
 2) Clone the project with
-```
-bash
+```bash
 git clone https://github.com/ChristopherHsu07/brawldle-guessing-game.git
 ```
 3) From the root, build and run the containers with 
