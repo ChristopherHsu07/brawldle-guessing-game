@@ -406,6 +406,22 @@ p {
   color: #fbef43;
 }
 
+.win-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.win-row .message.win {
+  margin: 0;
+}
+
+.play-again {
+  min-width: 9rem;
+}
+
 .color-legend {
   display: flex;
   justify-content: center;

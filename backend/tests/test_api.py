@@ -130,3 +130,34 @@ def test_guess_malformed_body() -> None:
         client.get("/")
         response = client.post("/guess", json={})
         assert response.status_code == 422
+
+
+def test_new_game_resets_state_keeps_session_cookie() -> None:
+    with TestClient(api.app) as client:
+        session_id = client.get("/").json()["session_id"]
+        cookie_before = client.cookies.get(api.SESSION_COOKIE)
+        assert cookie_before == session_id
+
+        answer = api.catalog.get_by_name("Shelly")
+        assert answer is not None
+        api.sessions[session_id] = GameSession.new(api.catalog, answer=answer)
+        assert client.post("/guess", json={"guess": "Shelly"}).status_code == 200
+
+        response = client.post("/new")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["session_id"] == session_id
+        assert data["state"]["status"] == "in_progress"
+        assert data["state"]["guess_count"] == 0
+        assert data["state"]["history"] == []
+        assert data["state"]["answer_name"] is None
+        assert client.cookies.get(api.SESSION_COOKIE) == cookie_before
+        assert response.headers.get("set-cookie") is None
+
+
+def test_new_game_missing_cookie() -> None:
+    with TestClient(api.app) as client:
+        client.get("/")
+        client.cookies.clear()
+        response = client.post("/new")
+        assert response.status_code == 404

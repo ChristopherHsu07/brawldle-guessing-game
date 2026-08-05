@@ -24,6 +24,17 @@ export async function startOrResumeGame() {
   return response.json()
 }
 
+export async function newGame() {
+  const response = await fetch('/api/new', {
+    method: 'POST',
+    credentials: 'include',
+  })
+  if (!response.ok) {
+    throw new Error(await parseError(response))
+  }
+  return response.json()
+}
+
 export async function submitGuess(guess) {
   const response = await fetch('/api/guess', {
     method: 'POST',

@@ -78,30 +78,37 @@ def _suggest(name: str, cat: BrawlerCatalog) -> str | None:
     return matches[0] if matches else None
 
 
+def _game_payload(session_id: str, session: GameSession, cat: BrawlerCatalog) -> dict[str, Any]:
+    return {
+        "session_id": session_id,
+        "brawler_count": len(cat),
+        "brawler_names": sorted(cat.all_names(), key=str.casefold),
+        "state": session.to_dict(),
+    }
+
+
 @app.get("/")
 def home(request: Request, response: Response) -> dict[str, Any]:
     cat = _require_catalog()
-    brawler_names = sorted(cat.all_names(), key=str.casefold)
     cookie_id = request.cookies.get(SESSION_COOKIE)
     if cookie_id and cookie_id in sessions:
-        session = sessions[cookie_id]
-        return {
-            "session_id": cookie_id,
-            "brawler_count": len(cat),
-            "brawler_names": brawler_names,
-            "state": session.to_dict(),
-        }
+        return _game_payload(cookie_id, sessions[cookie_id], cat)
 
     session = GameSession.new(cat)
     session_id = str(uuid.uuid4())
     sessions[session_id] = session
     _set_session_cookie(response, session_id)
-    return {
-        "session_id": session_id,
-        "brawler_count": len(cat),
-        "brawler_names": brawler_names,
-        "state": session.to_dict(),
-    }
+    return _game_payload(session_id, session, cat)
+
+
+@app.post("/new")
+def new_game(request: Request) -> dict[str, Any]:
+    """Start a fresh round under the existing session cookie (no new cookie)."""
+    cat = _require_catalog()
+    session_id, _old = _session_from_cookie(request)
+    session = GameSession.new(cat)
+    sessions[session_id] = session
+    return _game_payload(session_id, session, cat)
 
 
 @app.post("/guess")

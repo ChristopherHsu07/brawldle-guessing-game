@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { startOrResumeGame, submitGuess } from './api.js'
+import { newGame, startOrResumeGame, submitGuess } from './api.js'
 import { getPinUrl } from './pins.js'
 import './App.css'
 
@@ -341,6 +341,26 @@ export default function App() {
     }
   }
 
+  async function onPlayAgain() {
+    if (submitting || isFlipping) return
+    setSubmitting(true)
+    setError('')
+    try {
+      const data = await newGame()
+      setHistory(data.state.history ?? [])
+      setStatus(data.state.status)
+      setGuessCount(data.state.guess_count)
+      setAnswerName(data.state.answer_name)
+      setGuess('')
+      setFlippingRow(null)
+      setMenuOpen(false)
+    } catch (err) {
+      setError(err.message || 'Failed to start a new game')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   const guessesWord = guessCount === 1 ? 'guess' : 'guesses'
 
   const headerTooltips = useMemo(() => {
@@ -432,9 +452,19 @@ export default function App() {
 
           {error ? <p className="message error">{error}</p> : null}
           {won && !isFlipping ? (
-            <p className="message win">
-              You got it! {answerName} in {guessCount} {guessesWord}.
-            </p>
+            <div className="win-row">
+              <p className="message win">
+                You got it! {answerName} in {guessCount} {guessesWord}.
+              </p>
+              <button
+                type="button"
+                className="button play-again"
+                onClick={onPlayAgain}
+                disabled={submitting}
+              >
+                <span className="button-label">Play again</span>
+              </button>
+            </div>
           ) : null}
 
           {history.length > 0 ? (
