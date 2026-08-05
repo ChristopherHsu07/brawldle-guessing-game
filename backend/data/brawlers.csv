@@ -42,7 +42,7 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 41,Lou,41,Controller,Mythic,Very Long,Male,3,"CC, Debuff, DOT"
 42,Byron,42,Support,Mythic,Very Long,Male,1,"Damage, Heal"
 43,Edgar,43,Assassin,Epic,Short,Male,2,Mobility
-44,Ruffs,44,Support,Epic,Long,Male,2,"Buff, Damage"
+44,Ruffs,44,Support,Mythic,Long,Male,2,"Buff, Damage"
 45,Stu,45,Assassin,Epic,Long,Male,2,"DOT, Mobility"
 46,Belle,46,Marksman,Epic,Very Long,Female,1,"Damage, Debuff"
 47,Squeak,47,Controller,Mythic,Long,Male,1,Damage
