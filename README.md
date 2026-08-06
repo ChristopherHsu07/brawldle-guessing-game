@@ -1,7 +1,6 @@
 # Brawldle: Brawl Stars Guessing Game
 
-<img width="1440" height="767" alt="Screenshot 2026-08-05 at 10 39 07 PM" src="https://github.com/user-attachments/assets/806ab3d8-2ab8-4d1d-8f2b-b32ba3798dd8" />
-
+<img width="1071" height="594" alt="Screenshot 2026-08-05 at 10 40 26 PM" src="https://github.com/user-attachments/assets/fd260e26-b876-446b-b3a0-491faab142c1" />
 
 ## Do you like Brawl Stars? Try out this Wordle-inspired Brawl Stars Guessing Game!
 
