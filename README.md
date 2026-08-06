@@ -1,5 +1,8 @@
 # Brawldle: Brawl Stars Guessing Game
 
+<img width="1440" height="767" alt="Screenshot 2026-08-05 at 10 39 07 PM" src="https://github.com/user-attachments/assets/806ab3d8-2ab8-4d1d-8f2b-b32ba3798dd8" />
+
+
 ## Do you like Brawl Stars? Try out this Wordle-inspired Brawl Stars Guessing Game!
 
 Using a React.js + Vite frontend and a simple FastAPI backend, I made a game where you try to guess the brawler based on categories
