@@ -4,4 +4,5 @@
 4) Convert csv data => SQL
 5) Create basic frontend/UI for game 👍
 6) Jazz it all up 👍
-7) Dockerize
+7) Dockerize 👍
+8) Secure app before deploying (IP)

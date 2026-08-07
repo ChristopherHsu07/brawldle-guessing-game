@@ -29,3 +29,6 @@ Created "answer sheet" containing brawler stats 👍
 ---------------------------------------------------------------------------------
 5) Dockerize
 - I'm going to split my frontend and backend into two different containers. Since they use completely different things, I think it'd be more organized just to do it that way.
+---------------------------------------------------------------------------------
+8) Secure app before deploying (IP)
+- There are a few security things I'm going to have to fix before deploying, so I'll get to work on those
