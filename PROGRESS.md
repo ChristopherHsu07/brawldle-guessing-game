@@ -32,3 +32,4 @@ Created "answer sheet" containing brawler stats 👍
 ---------------------------------------------------------------------------------
 8) Secure app before deploying (IP)
 - There are a few security things I'm going to have to fix before deploying, so I'll get to work on those
+1) Expose port instead of mapping: listing port mappings in docker compose states how traffic to host is mapped to traffic to container. Having this mapping means someone could connect to the host port to talk directly to backend, so we hide this by exposing port instead of mapping (so it only allows traffic from inside the private network.)

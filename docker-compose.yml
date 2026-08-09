@@ -3,8 +3,9 @@ name: brawlde-guessing-game
 services:
   backend:
     build: ./backend
-    ports:
-      - 8000:8000
+    # expose port ONLY, so people can't directly talk to backend
+    expose:
+      [8000]
   
   frontend:
     build: ./frontend
