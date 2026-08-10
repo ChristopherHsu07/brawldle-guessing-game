@@ -6,6 +6,7 @@ Run from the backend/ directory:
 
 from __future__ import annotations
 
+import time
 import difflib
 import uuid
 from contextlib import asynccontextmanager
@@ -19,10 +20,16 @@ from src.session import GameAlreadyOverError, GameSession, InvalidGuessError
 
 SESSION_COOKIE = "brawldle_session"
 SESSION_COOKIE_MAX_AGE = 24 * 60 * 60  # 24 hours
+SESSION_TTL_SECONDS = SESSION_COOKIE_MAX_AGE  # keep server TTL in sync with the cookie
 
-sessions: dict[str, GameSession] = {}
+sessions: dict[str, tuple[float, GameSession]] = {}
 catalog: BrawlerCatalog | None = None
 
+def _purge_expired_sessions() -> None:
+    cutoff = time.time() - SESSION_TTL_SECONDS
+    expired = [sid for sid, (created_at, _) in sessions.items() if created_at < cutoff]
+    for sid in expired:
+        del sessions[sid]
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
@@ -47,10 +54,10 @@ def _require_catalog() -> BrawlerCatalog:
 
 
 def _get_session(session_id: str) -> GameSession:
-    session = sessions.get(session_id)
-    if session is None:
+    entry = sessions.get(session_id)
+    if entry is None:
         raise HTTPException(status_code=404, detail="Unknown session_id.")
-    return session
+    return entry[1]
 
 
 def _session_from_cookie(request: Request) -> tuple[str, GameSession]:
@@ -89,14 +96,15 @@ def _game_payload(session_id: str, session: GameSession, cat: BrawlerCatalog) ->
 
 @app.get("/")
 def home(request: Request, response: Response) -> dict[str, Any]:
+    _purge_expired_sessions()
     cat = _require_catalog()
     cookie_id = request.cookies.get(SESSION_COOKIE)
     if cookie_id and cookie_id in sessions:
-        return _game_payload(cookie_id, sessions[cookie_id], cat)
+        return _game_payload(cookie_id, sessions[cookie_id][1], cat)  # unpack session
 
     session = GameSession.new(cat)
     session_id = str(uuid.uuid4())
-    sessions[session_id] = session
+    sessions[session_id] = (time.time(), session)
     _set_session_cookie(response, session_id)
     return _game_payload(session_id, session, cat)
 
@@ -107,9 +115,8 @@ def new_game(request: Request) -> dict[str, Any]:
     cat = _require_catalog()
     session_id, _old = _session_from_cookie(request)
     session = GameSession.new(cat)
-    sessions[session_id] = session
+    sessions[session_id] = (time.time(), session)  # store as tuple, refresh timestamp too
     return _game_payload(session_id, session, cat)
-
 
 @app.post("/guess")
 def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
