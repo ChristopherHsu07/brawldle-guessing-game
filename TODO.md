@@ -5,4 +5,5 @@
 5) Create basic frontend/UI for game 👍
 6) Jazz it all up 👍
 7) Dockerize 👍
-8) Secure app before deploying (IP)
+8) Secure app before deploying 👍
+9) Deploy (IP)
