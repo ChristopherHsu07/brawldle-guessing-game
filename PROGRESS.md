@@ -37,3 +37,8 @@ Created "answer sheet" containing brawler stats 👍
 3) Add rate limiting to the guess path through frontend: Guess api takes a reasonable amount of computing power, so someone spamming it could mess us up pretty bad. We implement rate limiting on nginx taking requests from frontend.
 4) Add rate limiting to the api directly. I did this with slowapi, so the backend has a hard limit on requests / min from a client.
 5) Remove API docs from backend: Right now, if people find my backend port (which they shouldn't be able to do anyways), they can use the fastapi docs to see all my dev debug tools (/docs, /redoc, etc). In this case, it doesn't affect much, but it's good practice to hide these. 
+6) Secure nginx server with security headers: Added a few headers that help avoid people griefing my site.
+  1) X-Content-Type-Options "nosniff": makes it so that browser always uses content-type that nginx server sends instead of guessing
+  2) X-Frame-Options "DENY": People can't hide a link to my website in their website's html
+  3) Referrer-Policy "strict-origin-when-cross-origin": Hides potentially sensitive URL info when redirecting to a different website (shouldn't be a problem, but no loss in implemeting)
+  4) Content Secure Policy: Prevents people from injecting into my website. Without this theoretically, someone could find out a way to inject html into the search bar and get it to display on my site. CSP outlines whether code will be loaded based on where it came from.
