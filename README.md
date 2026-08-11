@@ -51,4 +51,5 @@ npm run dev
 Frontend will default to running on port 5173.
 
 ## COMMENTS
-Brawler stats/data can sometimes be incorrect, so please let me know if you see anything about brawlers that is wrong!
+- Brawler stats/data can sometimes be incorrect, so please let me know if you see anything about brawlers that is wrong!
+- CSS/design is modeled from Aina Raharison, found [here](https://codepen.io/aina-raharison/pen/wvdaqbV)
