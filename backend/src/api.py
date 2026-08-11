@@ -18,6 +18,10 @@ from pydantic import BaseModel, Field
 from src.catalog import BrawlerCatalog
 from src.session import GameAlreadyOverError, GameSession, InvalidGuessError
 
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
 SESSION_COOKIE = "brawldle_session"
 SESSION_COOKIE_MAX_AGE = 24 * 60 * 60  # 24 hours
 SESSION_TTL_SECONDS = SESSION_COOKIE_MAX_AGE  # keep server TTL in sync with the cookie
@@ -42,6 +46,9 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="Brawldle", lifespan=lifespan)
 
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 class GuessRequest(BaseModel):
     guess: str = Field(min_length=1)
@@ -95,6 +102,7 @@ def _game_payload(session_id: str, session: GameSession, cat: BrawlerCatalog) ->
 
 
 @app.get("/")
+@limiter.limit("30/minute")
 def home(request: Request, response: Response) -> dict[str, Any]:
     _purge_expired_sessions()
     cat = _require_catalog()
@@ -110,6 +118,7 @@ def home(request: Request, response: Response) -> dict[str, Any]:
 
 
 @app.post("/new")
+@limiter.limit("30/minute")
 def new_game(request: Request) -> dict[str, Any]:
     """Start a fresh round under the existing session cookie (no new cookie)."""
     cat = _require_catalog()
@@ -119,6 +128,7 @@ def new_game(request: Request) -> dict[str, Any]:
     return _game_payload(session_id, session, cat)
 
 @app.post("/guess")
+@limiter.limit("20/minute")
 def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
     cat = _require_catalog()
     _session_id, session = _session_from_cookie(request)
