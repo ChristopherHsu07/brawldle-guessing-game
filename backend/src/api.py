@@ -57,7 +57,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 class GuessRequest(BaseModel):
-    guess: str = Field(min_length=1)
+    guess: str = Field(min_length=1, max_length=20)
 
 
 def _require_catalog() -> BrawlerCatalog:
