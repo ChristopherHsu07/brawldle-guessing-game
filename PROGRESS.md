@@ -41,7 +41,7 @@ Created "answer sheet" containing brawler stats 👍
   - X-Content-Type-Options "nosniff": makes it so that browser always uses content-type that nginx server sends instead of guessing
   - X-Frame-Options "DENY": People can't hide a link to my website in their website's html
   - Referrer-Policy "strict-origin-when-cross-origin": Hides potentially sensitive URL info when redirecting to a different website (shouldn't be a problem, but no loss in implemeting)
-  4) Content Secure Policy: Prevents people from injecting into my website. Without this theoretically, someone could find out a way to inject html into the search bar and get it to display on my site. CSP outlines whether code will be loaded based on where it came from.
+  - Content Secure Policy: Prevents people from injecting into my website. Without this theoretically, someone could find out a way to inject html into the search bar and get it to display on my site. CSP outlines whether code will be loaded based on where it came from.
 7) Make custom user for containers: Sort of like least-privelege perms, containers are given users who are allowed to interactive with just enough to build the containers. Without this, it defaults to root access, giving our container users access to the whole machine
 8) Fix versions for requirements.txt: Without this, people could pip install different versions of these packages, which could change in the future.
 9) Minor bug fix: fonts weren't loading in when running through Docker. This is because CSP was blocking getting css fonts from google fonts, so just added that as an exception to the CSP.
