@@ -42,4 +42,4 @@ Created "answer sheet" containing brawler stats 👍
   2) X-Frame-Options "DENY": People can't hide a link to my website in their website's html
   3) Referrer-Policy "strict-origin-when-cross-origin": Hides potentially sensitive URL info when redirecting to a different website (shouldn't be a problem, but no loss in implemeting)
   4) Content Secure Policy: Prevents people from injecting into my website. Without this theoretically, someone could find out a way to inject html into the search bar and get it to display on my site. CSP outlines whether code will be loaded based on where it came from.
-  5) Make custom user for containers: Sort of like least-privelege perms, containers are given users who are allowed to interactive with just enough to build the containers. Without this, it defaults to root access, giving our container users access to the whole machine
+7) Make custom user for containers: Sort of like least-privelege perms, containers are given users who are allowed to interactive with just enough to build the containers. Without this, it defaults to root access, giving our container users access to the whole machine
