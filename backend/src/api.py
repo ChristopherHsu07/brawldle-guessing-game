@@ -44,7 +44,13 @@ async def lifespan(_app: FastAPI):
     catalog = None
 
 
-app = FastAPI(title="Brawldle", lifespan=lifespan)
+app = FastAPI(
+    title="Brawldle",
+    lifespan=lifespan,
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,  # also hides /openapi.json, the underlying schema
+)
 
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
