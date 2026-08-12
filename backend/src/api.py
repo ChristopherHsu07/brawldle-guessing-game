@@ -9,10 +9,13 @@ from __future__ import annotations
 import time
 import difflib
 import uuid
+import os
+
 from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from src.catalog import BrawlerCatalog
@@ -55,6 +58,22 @@ app = FastAPI(
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+_is_production = os.environ.get("ENVIRONMENT", "development") == "production"
+
+_allowed_origins = [
+    origin.strip()
+    for origin in os.environ.get("FRONTEND_ORIGIN", "").split(",")
+    if origin.strip()
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+)
 
 class GuessRequest(BaseModel):
     guess: str = Field(min_length=1, max_length=20)
