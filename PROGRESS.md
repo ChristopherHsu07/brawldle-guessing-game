@@ -56,3 +56,4 @@
 ---------------------------------------------------------------------------------
 **8) Convert game sessions from map -> redis**
 - While a python hashmap was sufficient to hold local game instances, when deploying to the internet, it'll be much better to use a db. I still want quick retrieval, so it looks like Redis will be my best bet. This way, scaling horizontally will be much more feasible.
+1) Implement Redis into backend APIs: Give APIs a db URL location to talk to, then have to process all of our data through json to send across. Redis finds the game session by cookie (game id), and stores a json containing {answer_name, guess_names, status}. After this, the server recieves this info, and looks up all the info to rebuild the game.

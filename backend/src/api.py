@@ -25,27 +25,28 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+import redis.asyncio as redis
+import json
+from src.compare import compare_guess
+from src.models import GameStatus, GuessResult
+
 SESSION_COOKIE = "brawldle_session"
 SESSION_COOKIE_MAX_AGE = 24 * 60 * 60  # 24 hours
 SESSION_TTL_SECONDS = SESSION_COOKIE_MAX_AGE  # keep server TTL in sync with the cookie
 
-sessions: dict[str, tuple[float, GameSession]] = {}
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
+redis_client: redis.Redis | None = None
 catalog: BrawlerCatalog | None = None
 
-def _purge_expired_sessions() -> None:
-    cutoff = time.time() - SESSION_TTL_SECONDS
-    expired = [sid for sid, (created_at, _) in sessions.items() if created_at < cutoff]
-    for sid in expired:
-        del sessions[sid]
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    global catalog
+    global catalog, redis_client
     catalog = BrawlerCatalog()
+    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
     yield
-    sessions.clear()
+    await redis_client.aclose()
     catalog = None
-
 
 app = FastAPI(
     title="Brawldle",
@@ -85,12 +86,45 @@ def _require_catalog() -> BrawlerCatalog:
     return catalog
 
 
-def _get_session(session_id: str) -> GameSession:
-    entry = sessions.get(session_id)
-    if entry is None:
-        raise HTTPException(status_code=404, detail="Unknown session_id.")
-    return entry[1]
+def _serialize_session(session: GameSession) -> str:
+    return json.dumps({
+        "answer_name": session.answer.name,
+        "guess_names": [g.guess_name for g in session.history],
+        "status": session.status.value,
+    })
 
+def _deserialize_session(data: str, cat: BrawlerCatalog) -> GameSession:
+    payload = json.loads(data)
+    answer = cat.get_by_name(payload["answer_name"])
+    history = [
+        GuessResult(
+            guess_name=name,
+            attributes=compare_guess(cat.get_by_name(name), answer),
+            correct=name.casefold() == answer.name.casefold(),
+        )
+        for name in payload["guess_names"]
+    ]
+    return GameSession(
+        catalog=cat,
+        answer=answer,
+        history=history,
+        status=GameStatus(payload["status"]),
+    )
+
+
+async def _save_session(session_id: str, session: GameSession) -> None:
+    await redis_client.set(
+        f"session:{session_id}",
+        _serialize_session(session),
+        ex=SESSION_TTL_SECONDS,
+    )
+
+
+async def _get_session(session_id: str, cat: BrawlerCatalog) -> GameSession:
+    data = await redis_client.get(f"session:{session_id}")
+    if data is None:
+        raise HTTPException(status_code=404, detail="Unknown session_id.")
+    return _deserialize_session(data, cat)
 
 def _session_from_cookie(request: Request) -> tuple[str, GameSession]:
     session_id = request.cookies.get(SESSION_COOKIE)
