@@ -1,11 +1,19 @@
 name: brawlde-guessing-game
 
 services:
+  redis:
+    image: redis:7-alpine
+    expose:
+      [6379]
   backend:
     build: ./backend
     # expose port ONLY, so people can't directly talk to backend
     expose:
       [8000]
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
   
   frontend:
     build: ./frontend
