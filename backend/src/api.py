@@ -105,7 +105,8 @@ def _set_session_cookie(response: Response, session_id: str) -> None:
         value=session_id,
         max_age=SESSION_COOKIE_MAX_AGE,
         httponly=True,
-        samesite="lax",
+        samesite="none" if _is_production else "lax",
+        secure=_is_production,
         path="/",
     )
 

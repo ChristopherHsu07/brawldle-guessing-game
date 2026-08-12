@@ -50,3 +50,4 @@
 - Before deploying, I have to make sure frontend and backend are set up to communicate on different servers. I cut some corners with the assumption they would be running on the same host, but since that's not the case, I gotta make some adjustments.
 1) Add API base to frontend: Before, api endpoints were hardcoded to default to the host path, so I set up a placeholder path that will eventually send requests to backend URL.
 2) Add CORS headers to backend API: Essentially telling the backend where the frontend is and that it should only accept requests from the frontend
+3) Set cookies to cross-site instead of same-site: Since we have frontend and backend sending cookies from different sites, we have to define that cookies can be shared cross-site
