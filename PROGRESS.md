@@ -38,10 +38,10 @@
 4) Add rate limiting to the api directly. I did this with slowapi, so the backend has a hard limit on requests / min from a client.
 5) Remove API docs from backend: Right now, if people find my backend port (which they shouldn't be able to do anyways), they can use the fastapi docs to see all my dev debug tools (/docs, /redoc, etc). In this case, it doesn't affect much, but it's good practice to hide these. 
 6) Secure nginx server with security headers: Added a few headers that help avoid people griefing my site.
-  1) X-Content-Type-Options "nosniff": makes it so that browser always uses content-type that nginx server sends instead of guessing
-  2) X-Frame-Options "DENY": People can't hide a link to my website in their website's html
-  3) Referrer-Policy "strict-origin-when-cross-origin": Hides potentially sensitive URL info when redirecting to a different website (shouldn't be a problem, but no loss in implemeting)
-  4) Content Secure Policy: Prevents people from injecting into my website. Without this theoretically, someone could find out a way to inject html into the search bar and get it to display on my site. CSP outlines whether code will be loaded based on where it came from.
+  - X-Content-Type-Options "nosniff": makes it so that browser always uses content-type that nginx server sends instead of guessing
+  - X-Frame-Options "DENY": People can't hide a link to my website in their website's html
+  - Referrer-Policy "strict-origin-when-cross-origin": Hides potentially sensitive URL info when redirecting to a different website (shouldn't be a problem, but no loss in implemeting)
+  - Content Secure Policy: Prevents people from injecting into my website. Without this theoretically, someone could find out a way to inject html into the search bar and get it to display on my site. CSP outlines whether code will be loaded based on where it came from.
 7) Make custom user for containers: Sort of like least-privelege perms, containers are given users who are allowed to interactive with just enough to build the containers. Without this, it defaults to root access, giving our container users access to the whole machine
 8) Fix versions for requirements.txt: Without this, people could pip install different versions of these packages, which could change in the future.
 9) Minor bug fix: fonts weren't loading in when running through Docker. This is because CSP was blocking getting css fonts from google fonts, so just added that as an exception to the CSP.
