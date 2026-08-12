@@ -51,3 +51,5 @@
 1) Add API base to frontend: Before, api endpoints were hardcoded to default to the host path, so I set up a placeholder path that will eventually send requests to backend URL.
 2) Add CORS headers to backend API: Essentially telling the backend where the frontend is and that it should only accept requests from the frontend
 3) Set cookies to cross-site instead of same-site: Since we have frontend and backend sending cookies from different sites, we have to define that cookies can be shared cross-site
+
+- Higher level, for all of these changes, I wanted to ensure dev still worked, while also being ready for deployment. All changes have implementation to default to previous paths/cookies when frontend/backend are running from the same host.
