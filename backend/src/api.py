@@ -163,35 +163,42 @@ def _game_payload(session_id: str, session: GameSession, cat: BrawlerCatalog) ->
 
 @app.get("/")
 @limiter.limit("30/minute")
-def home(request: Request, response: Response) -> dict[str, Any]:
-    _purge_expired_sessions()
+async def home(request: Request, response: Response) -> dict[str, Any]:
     cat = _require_catalog()
     cookie_id = request.cookies.get(SESSION_COOKIE)
-    if cookie_id and cookie_id in sessions:
-        return _game_payload(cookie_id, sessions[cookie_id][1], cat)  # unpack session
-
+    if cookie_id:
+        data = await redis_client.get(f"session:{cookie_id}")
+        if data is not None:
+            session = _deserialize_session(data, cat)
+            return _game_payload(cookie_id, session, cat)
+ 
     session = GameSession.new(cat)
     session_id = str(uuid.uuid4())
-    sessions[session_id] = (time.time(), session)
+    await _save_session(session_id, session)
     _set_session_cookie(response, session_id)
     return _game_payload(session_id, session, cat)
 
 
 @app.post("/new")
 @limiter.limit("30/minute")
-def new_game(request: Request) -> dict[str, Any]:
+async def new_game(request: Request) -> dict[str, Any]:
     """Start a fresh round under the existing session cookie (no new cookie)."""
     cat = _require_catalog()
-    session_id, _old = _session_from_cookie(request)
+    session_id = request.cookies.get(SESSION_COOKIE)
     session = GameSession.new(cat)
-    sessions[session_id] = (time.time(), session)  # store as tuple, refresh timestamp too
+    if not session_id:
+        raise HTTPException(status_code=404, detail="Unknown session_id.")
+    await _save_session(session_id, session)
     return _game_payload(session_id, session, cat)
 
 @app.post("/guess")
 @limiter.limit("20/minute")
-def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
+async def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
     cat = _require_catalog()
-    _session_id, session = _session_from_cookie(request)
+    session_id = request.cookies.get(SESSION_COOKIE)
+    if not session_id:
+        raise HTTPException(status_code=404, detail="Unknown session_id.")
+    session = await _get_session(session_id, cat)
 
     try:
         result = session.make_guess(body.guess)
@@ -203,6 +210,8 @@ def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail=detail) from None
     except GameAlreadyOverError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from None
+
+    await _save_session(session_id, session)
 
     state = session.state()
     return {
