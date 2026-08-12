@@ -48,3 +48,4 @@
 ---------------------------------------------------------------------------------
 **7) Prep frontend and backend for independent deployment (IP)**
 - Before deploying, I have to make sure frontend and backend are set up to communicate on different servers. I cut some corners with the assumption they would be running on the same host, but since that's not the case, I gotta make some adjustments.
+1) Add API base to frontend: Before, api endpoints were hardcoded to default to the host path, so I set up a placeholder path that will eventually send requests to backend URL.

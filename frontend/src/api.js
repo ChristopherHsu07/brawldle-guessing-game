@@ -1,3 +1,6 @@
+// TODO: FOR PRODUCTION, CHANGE API BASE URL TO BACKEND
+const API_BASE = import.meta.env.VITE_API_URL || '/api'
+
 async function parseError(response) {
   try {
     const data = await response.json()
@@ -17,7 +20,7 @@ async function parseError(response) {
 }
 
 export async function startOrResumeGame() {
-  const response = await fetch('/api/', { credentials: 'include' })
+  const response = await fetch(`${API_BASE}/`, { credentials: 'include' })
   if (!response.ok) {
     throw new Error(await parseError(response))
   }
@@ -25,7 +28,7 @@ export async function startOrResumeGame() {
 }
 
 export async function newGame() {
-  const response = await fetch('/api/new', {
+  const response = await fetch(`${API_BASE}/new`, {
     method: 'POST',
     credentials: 'include',
   })
@@ -36,7 +39,7 @@ export async function newGame() {
 }
 
 export async function submitGuess(guess) {
-  const response = await fetch('/api/guess', {
+  const response = await fetch(`${API_BASE}/guess`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
