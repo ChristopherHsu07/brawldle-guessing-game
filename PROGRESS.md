@@ -53,3 +53,6 @@
 3) Set cookies to cross-site instead of same-site: Since we have frontend and backend sending cookies from different sites, we have to define that cookies can be shared cross-site
 
 - Higher level, for all of these changes, I wanted to ensure dev still worked, while also being ready for deployment. All changes have implementation to default to previous paths/cookies when frontend/backend are running from the same host.
+---------------------------------------------------------------------------------
+**8) Convert game sessions from map -> redis**
+- While a python hashmap was sufficient to hold local game instances, when deploying to the internet, it'll be much better to use a db. I still want quick retrieval, so it looks like Redis will be my best bet. This way, scaling horizontally will be much more feasible.
