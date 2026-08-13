@@ -68,3 +68,6 @@
 4) Removed CORS from backend and backend URL from frontend. The way it works now is that api requests to frontend will be remapped directly to backend, then returned. This way, the cookies aren't sent cross site.
 
 Alright! We're deployed now!!! yay
+---------------------------------------------------------------------------------
+**POLISHING**
+- Added meta tags to index.html to make url nice and pretty
