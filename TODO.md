@@ -4,5 +4,6 @@
 4) Create basic frontend/UI for game 👍
 5) Dockerize 👍
 6) Secure app before deploying 👍
-7) Prep frontend and backend for independent deployment (IP)
-8) Convert game sessions from map -> redis
+7) Prep frontend and backend for independent deployment 👍
+8) Convert game sessions from map -> redis 👍
+9) Deploy! (IP)

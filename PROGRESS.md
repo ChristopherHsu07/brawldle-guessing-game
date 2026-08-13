@@ -59,3 +59,6 @@
 1) Implement Redis into backend APIs: Give APIs a db URL location to talk to, then have to process all of our data through json to send across. Redis finds the game session by cookie (game id), and stores a json containing {answer_name, guess_names, status}. After this, the server recieves this info, and looks up all the info to rebuild the game.
 2) Also have to adjust the APIs themself to ensure switch from saving data in hashmap to saving data to redis
 3) Finally, had to update my yaml file for running locally, add a redis instance for backend to talk to
+---------------------------------------------------------------------------------
+**9) Deploy!**
+- For my deployment, I think I'll use Render for my backend and db and Vercel for my frontend. Everything will just be doing settings and plugging in URLs into my code.
