@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://brawldle-guessing-game.onrender.com/:path*"
+      "destination": "https://brawldle-guessing-game.onrender.com/$1"
     }
   ]
 }
