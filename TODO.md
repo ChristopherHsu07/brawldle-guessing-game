@@ -6,4 +6,4 @@
 6) Secure app before deploying 👍
 7) Prep frontend and backend for independent deployment 👍
 8) Convert game sessions from map -> redis 👍
-9) Deploy! (IP)
+9) Deploy! 👍

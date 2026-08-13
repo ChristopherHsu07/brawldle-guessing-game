@@ -1,25 +1,28 @@
-# Brawldle: Brawl Stars Guessing Game
+#  [Brawldle](https://brawldle-guessing-game.vercel.app "Try It Out!"): Brawl Stars Guessing Game
 
 <img width="1071" height="594" alt="Screenshot 2026-08-05 at 10 40 26 PM" src="https://github.com/user-attachments/assets/fd260e26-b876-446b-b3a0-491faab142c1" />
 
 ## Do you like Brawl Stars? Try out this Wordle-inspired Brawl Stars Guessing Game!
 
-Using a React.js + Vite frontend and a simple FastAPI backend, I made a game where you try to guess the brawler based on categories
+Using a React.js + Vite frontend and a simple FastAPI backend with a Redis db, I made a game where you try to guess the brawler based on categories.
+
+I deployed using Render for my backend and db, and Vercel for my frontend. If you want to see my progress and how I built it, check out PROGRESS.md.
 
 # HOW TO PLAY:
 Start by guessing a brawler, where you'll see several categories pop up, including brawler number, gender, attack range, etc. From these, You will see which ones are correct, partially correct, or incorrect, narrowing the possible brawler. Try to guess the brawler in as few guesses as possible!
 
 # HOW TO RUN IT:
-You can either run the project on your machine or run it on Docker. 
 
-
-## RUNNING ON DOCKER (RECOMMENDED)
-1) Make sure you have Docker installed
-2) Clone the project with
+1) Clone the project with
 ```bash
 git clone https://github.com/ChristopherHsu07/brawldle-guessing-game.git
 ```
-3) From the root, build and run the containers with 
+
+From here, you can either run the project on your machine or run it on Docker. 
+
+## RUNNING ON DOCKER (RECOMMENDED)
+1) Make sure you have Docker installed
+2) From the root, build and run the containers with 
 ```bash
 docker compose up --build
 ```

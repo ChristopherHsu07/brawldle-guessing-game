@@ -27,10 +27,10 @@
 - Added tile flipping like wordle, and minorly changed the way super type handles partial corrects
 - Fixed some of the pngs and format stuff, then added tooltips on how to play, as well as my github at the bottom. Frontend should be good for now.
 ---------------------------------------------------------------------------------
-**5) Dockerize**
+**5) Dockerize 👍** 
 - I'm going to split my frontend and backend into two different containers. Since they use completely different things, I think it'd be more organized just to do it that way.
 ---------------------------------------------------------------------------------
-**6) Secure app before deploying (IP)**
+**6) Secure app before deploying 👍** 
 - There are a few security things I'm going to have to fix before deploying, so I'll get to work on those
 1) Expose port instead of mapping: listing port mappings in docker compose states how traffic to host is mapped to traffic to container. Having this mapping means someone could connect to the host port to talk directly to backend, so we hide this by exposing port instead of mapping (so it only allows traffic from inside the private network.)
 2) Remove expired cookie sessions from memory: The way I had it before, all sessions are stored in memory (which is gonna be grow enormous). While cookies expire, the sessions still live in memory, so I made it so it terminates the sessions that have expired cookies since we don't need them anymore.
@@ -46,7 +46,7 @@
 8) Fix versions for requirements.txt: Without this, people could pip install different versions of these packages, which could change in the future.
 9) Minor bug fix: fonts weren't loading in when running through Docker. This is because CSP was blocking getting css fonts from google fonts, so just added that as an exception to the CSP.
 ---------------------------------------------------------------------------------
-**7) Prep frontend and backend for independent deployment (IP)**
+**7) Prep frontend and backend for independent deployment 👍**
 - Before deploying, I have to make sure frontend and backend are set up to communicate on different servers. I cut some corners with the assumption they would be running on the same host, but since that's not the case, I gotta make some adjustments.
 1) Add API base to frontend: Before, api endpoints were hardcoded to default to the host path, so I set up a placeholder path that will eventually send requests to backend URL.
 2) Add CORS headers to backend API: Essentially telling the backend where the frontend is and that it should only accept requests from the frontend
@@ -54,14 +54,17 @@
 
 - Higher level, for all of these changes, I wanted to ensure dev still worked, while also being ready for deployment. All changes have implementation to default to previous paths/cookies when frontend/backend are running from the same host.
 ---------------------------------------------------------------------------------
-**8) Convert game sessions from map -> redis**
+**8) Convert game sessions from map -> redis 👍**
 - While a python hashmap was sufficient to hold local game instances, when deploying to the internet, it'll be much better to use a db. I still want quick retrieval, so it looks like Redis will be my best bet. This way, scaling horizontally will be much more feasible.
 1) Implement Redis into backend APIs: Give APIs a db URL location to talk to, then have to process all of our data through json to send across. Redis finds the game session by cookie (game id), and stores a json containing {answer_name, guess_names, status}. After this, the server recieves this info, and looks up all the info to rebuild the game.
 2) Also have to adjust the APIs themself to ensure switch from saving data in hashmap to saving data to redis
 3) Finally, had to update my yaml file for running locally, add a redis instance for backend to talk to
 ---------------------------------------------------------------------------------
-**9) Deploy!**
+**9) Deploy! 👍**
 - For my deployment, I think I'll use Render for my backend and db and Vercel for my frontend. Everything will just be doing settings and plugging in URLs into my code.
 1) Created Redis instance and backend running on Docker in Render, added env variables: changed runtype to production mode, added redis url to backend for communication
 2) Added Backend URL to frontend env URLs
 3) App deployment works, but may browsers block third-party cookies, so it just won't work on these. I'm changing the way the cookies work to make it work on this.
+4) Removed CORS from backend and backend URL from frontend. The way it works now is that api requests to frontend will be remapped directly to backend, then returned. This way, the cookies aren't sent cross site.
+
+Alright! We're deployed now!!! yay
