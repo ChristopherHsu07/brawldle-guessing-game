@@ -15,7 +15,6 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from src.catalog import BrawlerCatalog
@@ -61,20 +60,6 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 _is_production = os.environ.get("ENVIRONMENT", "development") == "production"
-
-_allowed_origins = [
-    origin.strip()
-    for origin in os.environ.get("FRONTEND_ORIGIN", "").split(",")
-    if origin.strip()
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_allowed_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
-)
 
 class GuessRequest(BaseModel):
     guess: str = Field(min_length=1, max_length=20)
@@ -139,7 +124,7 @@ def _set_session_cookie(response: Response, session_id: str) -> None:
         value=session_id,
         max_age=SESSION_COOKIE_MAX_AGE,
         httponly=True,
-        samesite="none" if _is_production else "lax",
+        samesite="lax",
         secure=_is_production,
         path="/",
     )
