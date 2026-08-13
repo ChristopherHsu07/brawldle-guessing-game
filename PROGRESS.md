@@ -64,3 +64,4 @@
 - For my deployment, I think I'll use Render for my backend and db and Vercel for my frontend. Everything will just be doing settings and plugging in URLs into my code.
 1) Created Redis instance and backend running on Docker in Render, added env variables: changed runtype to production mode, added redis url to backend for communication
 2) Added Backend URL to frontend env URLs
+3) App deployment works, but may browsers block third-party cookies, so it just won't work on these. I'm changing the way the cookies work to make it work on this.
