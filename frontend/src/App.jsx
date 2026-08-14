@@ -205,6 +205,7 @@ export default function App() {
   const [guess, setGuess] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [wakingUp, setWakingUp] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [highlightIndex, setHighlightIndex] = useState(0)
@@ -214,6 +215,42 @@ export default function App() {
   const blurTimeoutRef = useRef(null)
   const FLIP_STAGGER_MS = 320
   const FLIP_DURATION_MS = 500
+
+  useEffect(() => {
+    let cancelled = false
+    const wakeTimer = setTimeout(() => {
+      if (!cancelled) setWakingUp(true)
+    }, 2000)  // only shows if the request is still pending after 2s
+
+    ;(async () => {
+      try {
+        const data = await startOrResumeGame()
+        if (cancelled) return
+        setHistory(data.state.history ?? [])
+        setStatus(data.state.status)
+        setGuessCount(data.state.guess_count)
+        setAnswerName(data.state.answer_name)
+        setBrawlerNames(data.brawler_names ?? [])
+        setError('')
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message || 'Failed to start game')
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+          setWakingUp(false)
+        }
+      }
+    })()
+
+    return () => {
+      cancelled = true
+      clearTimeout(wakeTimer)
+      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current)
+    }
+  }, [])
+
 
   useEffect(() => {
     let cancelled = false
@@ -449,8 +486,11 @@ export default function App() {
               <span className="button-label">Guess</span>
             </button>
           </form>
-
-          {error ? <p className="message error">{error}</p> : null}
+          {wakingUp && loading ? (
+            <p className="message">Waking up the server, this can take up to a minute…</p>
+          ) : error ? (
+            <p className="message error">{error}</p>
+          ) : null}
           {won && !isFlipping ? (
             <div className="win-row">
               <p className="message win">
