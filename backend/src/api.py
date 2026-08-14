@@ -205,3 +205,8 @@ async def submit_guess(request: Request, body: GuessRequest) -> dict[str, Any]:
         "guess_count": state.guess_count,
         "answer_name": state.answer_name,
     }
+
+@app.get("/health")
+@app.head("/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
