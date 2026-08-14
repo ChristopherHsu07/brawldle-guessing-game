@@ -9,7 +9,7 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 8,Jessie,Original 15,Controller,Super Rare,Long,Female,1,Summon
 9,Nita,Original 15,Damage Dealer,Rare,Normal,Female,1,Summon
 10,Dynamike,Original 15,Artillery,Super Rare,Long,Male,2,"CC, Damage"
-11,El Primo,Original 15,Tank,Rare,Short,Female,4,"CC, Damage, Mobility"
+11,El Primo,Original 15,Tank,Rare,Short,Male,4,"CC, Damage, Mobility"
 12,Mortis,Original 15,Assassin,Mythic,Short,Male,1,"Damage, Heal"
 13,Crow,Original 15,Assassin,Legendary,Long,Male,3,"Damage, DOT, Mobility"
 14,Poco,Original 15,Support,Rare,Long,Male,1,Heal
