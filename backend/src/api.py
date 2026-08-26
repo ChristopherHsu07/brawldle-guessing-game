@@ -1,12 +1,12 @@
 """FastAPI REST layer for Brawldle.
 
 Run from the backend/ directory:
-  uvicorn src.api:app --reload
+  uvicorn src.api:app --host 127.0.0.1 --port 8000
 """
 
 from __future__ import annotations
 
-import time
+import logging
 import difflib
 import uuid
 import os
@@ -29,22 +29,41 @@ import json
 from src.compare import compare_guess
 from src.models import GameStatus, GuessResult
 
+logger = logging.getLogger("uvicorn.error")
+
 SESSION_COOKIE = "brawldle_session"
 SESSION_COOKIE_MAX_AGE = 24 * 60 * 60  # 24 hours
 SESSION_TTL_SECONDS = SESSION_COOKIE_MAX_AGE  # keep server TTL in sync with the cookie
+REDIS_SOCKET_TIMEOUT_SECONDS = 3
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
+REDIS_URL = os.environ.get("REDIS_URL") or None
 redis_client: redis.Redis | None = None
+sessions: dict[str, GameSession] = {}
 catalog: BrawlerCatalog | None = None
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     global catalog, redis_client
+    logger.info("Loading brawler catalog")
     catalog = BrawlerCatalog()
-    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+    logger.info("Catalog loaded (%s brawlers)", len(catalog))
+    if REDIS_URL:
+        logger.info("Using Redis at %s", REDIS_URL)
+        redis_client = redis.from_url(
+            REDIS_URL,
+            decode_responses=True,
+            socket_connect_timeout=REDIS_SOCKET_TIMEOUT_SECONDS,
+            socket_timeout=REDIS_SOCKET_TIMEOUT_SECONDS,
+        )
+    else:
+        logger.info("REDIS_URL unset; using in-memory sessions")
+        redis_client = None
     yield
-    await redis_client.aclose()
+    if redis_client is not None:
+        await redis_client.aclose()
+        redis_client = None
+    sessions.clear()
     catalog = None
 
 app = FastAPI(
@@ -98,18 +117,30 @@ def _deserialize_session(data: str, cat: BrawlerCatalog) -> GameSession:
 
 
 async def _save_session(session_id: str, session: GameSession) -> None:
-    await redis_client.set(
-        f"session:{session_id}",
-        _serialize_session(session),
-        ex=SESSION_TTL_SECONDS,
-    )
+    if redis_client is not None:
+        await redis_client.set(
+            f"session:{session_id}",
+            _serialize_session(session),
+            ex=SESSION_TTL_SECONDS,
+        )
+        return
+    sessions[session_id] = session
+
+
+async def _try_get_session(session_id: str, cat: BrawlerCatalog) -> GameSession | None:
+    if redis_client is not None:
+        data = await redis_client.get(f"session:{session_id}")
+        if data is None:
+            return None
+        return _deserialize_session(data, cat)
+    return sessions.get(session_id)
 
 
 async def _get_session(session_id: str, cat: BrawlerCatalog) -> GameSession:
-    data = await redis_client.get(f"session:{session_id}")
-    if data is None:
+    session = await _try_get_session(session_id, cat)
+    if session is None:
         raise HTTPException(status_code=404, detail="Unknown session_id.")
-    return _deserialize_session(data, cat)
+    return session
 
 def _session_from_cookie(request: Request) -> tuple[str, GameSession]:
     session_id = request.cookies.get(SESSION_COOKIE)
@@ -152,9 +183,8 @@ async def home(request: Request, response: Response) -> dict[str, Any]:
     cat = _require_catalog()
     cookie_id = request.cookies.get(SESSION_COOKIE)
     if cookie_id:
-        data = await redis_client.get(f"session:{cookie_id}")
-        if data is not None:
-            session = _deserialize_session(data, cat)
+        session = await _try_get_session(cookie_id, cat)
+        if session is not None:
             return _game_payload(cookie_id, session, cat)
  
     session = GameSession.new(cat)

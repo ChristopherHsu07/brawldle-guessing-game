@@ -26,9 +26,11 @@ From here, you can either run the project on your machine or run it on Docker.
 ```bash
 docker compose up --build
 ```
-Frontend will default to run on localhost port 80.
+Frontend will default to run on localhost port 80. This path starts Redis because Compose sets `REDIS_URL`.
 
 ## RUNNING LOCALLY
+Local uvicorn does not need Redis; sessions stay in memory unless `REDIS_URL` is set (Docker and Render set it).
+
 1) Make sure you have Node.js installed
 2) cd into frontend folder, then install frontend requirements:
 ```bash
@@ -40,13 +42,15 @@ cd back to root, then into backend folder and create a virtual environment, then
 cd ../backend
 python -m venv .venv
 source .venv/bin/activate
-pip install requirements.txt
+pip install -r requirements.txt
 ```
-Run backend:
+Run backend (from the backend folder). Skip `--reload` by default — on macOS it can hang during pandas import and never accept requests:
 ```bash
-uvicorn src.api:app --reload
+uvicorn src.api:app --host 127.0.0.1 --port 8000
 ```
-cd into frontend, the run frontend:
+Optional auto-reload if that works on your machine: `uvicorn src.api:app --reload --host 127.0.0.1 --port 8000`.
+
+cd into frontend, then run frontend:
 ```bash
 cd ../frontend
 npm run dev

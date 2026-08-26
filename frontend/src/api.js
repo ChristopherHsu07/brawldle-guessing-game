@@ -1,4 +1,7 @@
 const API_BASE = '/api'
+const FETCH_TIMEOUT_MS = import.meta.env.PROD ? 60_000 : 30_000
+const LOCAL_API_HINT = "Can't reach the local API (is uvicorn running?)"
+const TIMEOUT_HINT = 'Server did not respond in time'
 
 async function parseError(response) {
   try {
@@ -18,34 +21,44 @@ async function parseError(response) {
   }
 }
 
-export async function startOrResumeGame() {
-  const response = await fetch(`${API_BASE}/`, { credentials: 'include' })
-  if (!response.ok) {
-    throw new Error(await parseError(response))
+async function apiFetch(path, options = {}) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+  try {
+    const response = await fetch(`${API_BASE}${path}`, {
+      credentials: 'include',
+      ...options,
+      signal: controller.signal,
+    })
+    if (!response.ok) {
+      throw new Error(await parseError(response))
+    }
+    return response.json()
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error(TIMEOUT_HINT)
+    }
+    if (err instanceof TypeError && !import.meta.env.PROD) {
+      throw new Error(LOCAL_API_HINT)
+    }
+    throw err
+  } finally {
+    clearTimeout(timer)
   }
-  return response.json()
+}
+
+export async function startOrResumeGame() {
+  return apiFetch('/')
 }
 
 export async function newGame() {
-  const response = await fetch(`${API_BASE}/new`, {
-    method: 'POST',
-    credentials: 'include',
-  })
-  if (!response.ok) {
-    throw new Error(await parseError(response))
-  }
-  return response.json()
+  return apiFetch('/new', { method: 'POST' })
 }
 
 export async function submitGuess(guess) {
-  const response = await fetch(`${API_BASE}/guess`, {
+  return apiFetch('/guess', {
     method: 'POST',
-    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ guess }),
   })
-  if (!response.ok) {
-    throw new Error(await parseError(response))
-  }
-  return response.json()
 }

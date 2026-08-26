@@ -218,9 +218,11 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false
-    const wakeTimer = setTimeout(() => {
-      if (!cancelled) setWakingUp(true)
-    }, 2000)  // only shows if the request is still pending after 2s
+    const wakeTimer = import.meta.env.PROD
+      ? setTimeout(() => {
+          if (!cancelled) setWakingUp(true)
+        }, 2000)
+      : null
 
     ;(async () => {
       try {
@@ -246,34 +248,7 @@ export default function App() {
 
     return () => {
       cancelled = true
-      clearTimeout(wakeTimer)
-      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current)
-    }
-  }, [])
-
-
-  useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      try {
-        const data = await startOrResumeGame()
-        if (cancelled) return
-        setHistory(data.state.history ?? [])
-        setStatus(data.state.status)
-        setGuessCount(data.state.guess_count)
-        setAnswerName(data.state.answer_name)
-        setBrawlerNames(data.brawler_names ?? [])
-        setError('')
-      } catch (err) {
-        if (!cancelled) {
-          setError(err.message || 'Failed to start game')
-        }
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    })()
-    return () => {
-      cancelled = true
+      if (wakeTimer) clearTimeout(wakeTimer)
       if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current)
     }
   }, [])
