@@ -18,7 +18,7 @@ id,Name,brawler number,Role,Rarity,Attack Range,Gender,Attacks per Ammo,Super Ty
 17,Pam,17,Support,Epic,Long,Female,9,Summon
 18,Tara,18,Damage Dealer,Mythic,Long,Female,3,"CC, Damage"
 19,Darryl,19,Tank,Super Rare,Normal,Male,10,"CC, Damage, Mobility"
-20,Penny,20,Artillery,Super Rare,Long,Female,1,Summon
+20,Penny,20,Controller,Super Rare,Long,Female,1,Summon
 21,Frank,21,Tank,Epic,Normal,Male,1,"CC, Damage"
 22,Gene,22,Controller,Mythic,Very Long,Male,1,"CC, Damage"
 23,Tick,23,Artillery,Super Rare,Long,Male,3,Summon
